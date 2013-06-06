@@ -1,0 +1,11 @@
+﻿@model InfoHub.Web.Models.Complex
+
+<h2>Complex Object</h2>
+
+@using (Html.BeginForm("See", "Test", FormMethod.Post))
+{
+    Html.RenderPartial("_dateTime", Model.DateTime);
+    
+    <input type="submit" name="submit" value="Submit" id="submit" />
+}
+

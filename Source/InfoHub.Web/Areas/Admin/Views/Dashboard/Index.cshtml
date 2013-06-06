@@ -1,0 +1,13 @@
+﻿@model InfoHub.Web.Areas.Admin.Interfaces.IDashboard
+@{
+    ViewBag.Title = "Dashboard";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div>
+    <h2>@ViewBag.Title</h2>
+    @{
+        Html.RenderPartial("_LogIn", Model.LoginRequest);
+    }
+</div>
+

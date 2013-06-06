@@ -1,0 +1,22 @@
+﻿@model InfoHub.Business.Interfaces.ILoginRequest
+           
+<div>
+    
+    @if(Model.Sumbitted)
+    {
+        using (Html.BeginForm("Logout", "Dashboard", FormMethod.Post))
+        {
+            <h2>Welcome to Admin Dashboard!</h2>
+                <input type="submit" name="Logout" value="Log out" id="Logout"/>
+        }
+    }
+    else
+    {
+        using (Html.BeginForm("Login", "Dashboard", FormMethod.Post))
+        {
+            <h2>Welcome to Admin Login!</h2>
+            <input type="submit" name="Logout" value="Login" id="Login"/>
+        }
+    }
+    
+</div>

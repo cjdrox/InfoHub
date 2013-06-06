@@ -1,0 +1,4 @@
+/Source/_ReSharper.InfoHub/*
+/Source/*/bin
+/Source/*/obj
+*.user
