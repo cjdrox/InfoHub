@@ -2,3 +2,5 @@
 /Source/*/bin
 /Source/*/obj
 *.user
+*.suo
+*.gitignore
