@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Security.Cryptography;
+using System.Text;
 using InfoHub.Security.Types;
 
 namespace InfoHub.Security.Models
@@ -46,13 +47,13 @@ namespace InfoHub.Security.Models
         }
 
         public override string Base64EncryptionKey {
-            get { return Convert.ToBase64String(_aes.Key); }
-            set { _aes.Key = Convert.FromBase64String(value); }
+            get { return Encoding.UTF8.GetString(_aes.Key); }
+            set { _aes.Key = Encoding.UTF8.GetBytes(value); }
         }
 
         public override string Base64DecryptionKey {
-            get { return Convert.ToBase64String(_aes.Key); }
-            set { _aes.Key = Convert.FromBase64String(value); }
+            get { return Encoding.UTF8.GetString(_aes.Key); }
+            set { _aes.Key = Encoding.UTF8.GetBytes(value); }
         }
 
         public override string Encrypt(string plaintext)
@@ -73,19 +74,21 @@ namespace InfoHub.Security.Models
             }
         }
 
-        public override string Decrypt(string plaintext)
+        public override string Decrypt(string cipherText)
         {
-            using (var enc = _aes.CreateDecryptor())
+            var cipherBytes = Convert.FromBase64String(cipherText);
+            using (var dec = _aes.CreateDecryptor())
             {
-                using (var memoryStream = new MemoryStream())
+                using (var memoryStream = new MemoryStream(cipherBytes))
                 {
-                    using (var cryptoStream = new CryptoStream(memoryStream, enc, CryptoStreamMode.Write))
+                    using (var cryptoStream = new CryptoStream(memoryStream, dec, CryptoStreamMode.Read))
                     {
+                        string result;
                         using (var reader = new StreamReader(cryptoStream))
                         {
-                            reader.ReadToEnd();
+                            result = reader.ReadToEnd();
                         }
-                        return Convert.ToBase64String(memoryStream.ToArray());
+                        return result;
                     }
                 }
             }
