@@ -46,7 +46,9 @@
     </CodeAnalysisDependentAssemblyPaths>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CryptorExtensionTestFixture.cs" />
     <Compile Include="CryptorTestFixture.cs" />
+    <Compile Include="HashTestFixture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="AESTestFixture.cs" />
   </ItemGroup>
