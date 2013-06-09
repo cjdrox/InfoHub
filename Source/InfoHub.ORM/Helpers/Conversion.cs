@@ -8,6 +8,14 @@
             {
                 case "Int32":
                     return "INT";
+                case "String":
+                    return "VARCHAR(255)";
+                case "Guid":
+                    return "VARCHAR(255)";
+                case "DateTime":
+                    return "DATETIME";
+                case "Boolean":
+                    return "BOOL";
                 default:
                     return typeName;
             }

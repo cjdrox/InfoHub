@@ -51,6 +51,10 @@
       <Project>{9CB637EB-5F74-4DFE-A7BA-29A29F99F3F9}</Project>
       <Name>InfoHub.Entity</Name>
     </ProjectReference>
+    <ProjectReference Include="..\InfoHub.ORM\InfoHub.ORM.csproj">
+      <Project>{E9325E05-96A9-4C20-B25E-949504AC6F63}</Project>
+      <Name>InfoHub.ORM</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Helpers\" />

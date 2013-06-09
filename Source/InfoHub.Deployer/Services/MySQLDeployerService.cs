@@ -4,9 +4,11 @@ using System.Reflection;
 using InfoHub.Business.Models;
 using InfoHub.Deployer.Helpers;
 using InfoHub.Deployer.Interfaces;
+using InfoHub.Entity.Models;
 using InfoHub.ORM.Interfaces;
 using InfoHub.ORM.Models;
 using InfoHub.ORM.Services;
+using InfoHub.ORM.Types;
 using IDatabaseDeployer = InfoHub.Deployer.Interfaces.IDatabaseDeployer;
 
 namespace InfoHub.Deployer.Services
@@ -89,9 +91,25 @@ namespace InfoHub.Deployer.Services
         }
         #endregion
         
-        public void DeployClass(Type type)
+        public void DeployClass(BaseEntity type)
         {
-            _connector.CreateTable(new Table(type.Name));
+            ITable table = new Table(type.Name);
+            var properties = type.GetType().GetProperties();
+
+            table.ColumnTypes = properties
+                .Where(p => !p.Name.ToLower().Equals("name") 
+                    && !p.Name.ToLower().Equals("schema")
+                    && !p.Name.ToLower().Equals("prototype")
+                    && !p.Name.ToLower().Equals("tablename")
+                    && !p.Name.ToLower().Equals("primarykeyfield")
+                    && !p.Name.ToLower().Equals("columntypes")
+                    )
+                .ToDictionary(r => r.Name, r => new ColumnData
+                                                    {
+                                                        Type = r.PropertyType
+                                                    });
+            
+            _connector.CreateTable(table);
         }
 
         public void DeployAllClasses(Assembly asm)
