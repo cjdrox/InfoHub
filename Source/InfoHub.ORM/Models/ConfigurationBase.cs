@@ -10,7 +10,7 @@ namespace InfoHub.ORM.Models
         public string Port { get; set; }
         public string Username { get; set; }
         public string Password { get; set; }
-        public bool IsValid { get; private set; }
+        public bool IsValid { get; protected set; }
         public Dictionary<string, string> AdditionalParameters { get; set; }
 
         public ConfigurationBase(string host, string database, string port, string username, string password)

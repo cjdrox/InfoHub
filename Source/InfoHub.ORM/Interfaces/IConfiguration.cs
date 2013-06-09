@@ -9,5 +9,6 @@ namespace InfoHub.ORM.Interfaces
         string Port { get; set; }
         string Username { get; set; }
         string Password { get; set; }
+        bool IsValid { get; }
     }
 }

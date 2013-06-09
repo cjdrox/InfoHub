@@ -4,7 +4,7 @@ using InfoHub.ORM.Types;
 
 namespace InfoHub.ORM.Models
 {
-    public class Table : ITable
+    public class Table : DynamicModel, ITable
     {
         public string Name { get; set; }
         public IDictionary<string, ColumnData> ColumnTypes { get; set; }
@@ -19,6 +19,8 @@ namespace InfoHub.ORM.Models
         {
         }
 
+        #region Fluent Interface
+
         public ITable WithName(string name)
         {
             Name = name;
@@ -27,20 +29,23 @@ namespace InfoHub.ORM.Models
 
         public ITable WithColumn<T>(string name)
         {
-            ColumnTypes.Add(name, new ColumnData{Type = typeof (T)});
+            ColumnTypes.Add(name, new ColumnData {Type = typeof (T)});
             return this;
         }
 
         public ITable WithColumn<T>(string name, long length)
         {
-            ColumnTypes.Add(name, new ColumnData { Type = typeof(T), Length = length});
+            ColumnTypes.Add(name, new ColumnData {Type = typeof (T), Length = length});
             return this;
         }
 
         public ITable WithColumn<T>(string name, long length, bool isPrimary)
         {
-            ColumnTypes.Add(name, new ColumnData { Type = typeof(T), Length = length, IsPrimary = isPrimary});
+            ColumnTypes.Add(name, new ColumnData {Type = typeof (T), Length = length, IsPrimary = isPrimary});
             return this;
         }
+
+        #endregion
+
     }
 }

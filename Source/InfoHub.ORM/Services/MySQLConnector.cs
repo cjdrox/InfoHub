@@ -10,11 +10,11 @@ namespace InfoHub.ORM.Services
 {
     public class MySQLConnector : IDatabaseConnector
     {
-        private Configuration _configuration;
+        private IConfiguration _configuration;
         private readonly MySqlConnection _connection;
         private readonly bool _showSql;
 
-        public MySQLConnector(Configuration configuration, bool showSql = false)
+        public MySQLConnector(IConfiguration configuration, bool showSql = false)
         {
             if (!configuration.IsValid)
             {
@@ -118,9 +118,8 @@ namespace InfoHub.ORM.Services
             return Query(query);
         }
 
-        public bool CreateTable(Func<ITable, ITable> table)
+        public bool CreateTable(ITable source)
         {
-            var source = table(new Table());
             var query = String.Format("CREATE TABLE `{0}` (", source.Name);
 
             foreach (var columnType in source.ColumnTypes)
@@ -132,19 +131,25 @@ namespace InfoHub.ORM.Services
                 var defaultValue = columnType.Value.DefaultValue;
 
                 query = String.Concat(query, String.Format("\n  {0} {1}", name, typeName));
-                query = String.Concat(query, length> 0 ? String.Format("({0}) ", length) : "");
+                query = String.Concat(query, length > 0 ? String.Format("({0}) ", length) : "");
                 query = String.Concat(query, (notNull ? "NOT NULL " : ""));
-                query = String.Concat(query, (defaultValue!=null ? String.Format("DEFAULT {0} ", defaultValue) : ""));
+                query = String.Concat(query, (defaultValue != null ? String.Format("DEFAULT {0} ", defaultValue) : ""));
 
                 if (!columnType.Equals(source.ColumnTypes.Last()))
                 {
-                    query = String.Concat(query, ",");                    
+                    query = String.Concat(query, ",");
                 }
             }
 
-            query = String.Concat(query, "\n);\n");                    
+            query = String.Concat(query, "\n);\n");
 
             return Query(query);
+        }
+
+        public bool CreateTable(Func<ITable, ITable> table)
+        {
+            var source = table(new Table());
+            return CreateTable(source);
         }
 
         public void Dispose()

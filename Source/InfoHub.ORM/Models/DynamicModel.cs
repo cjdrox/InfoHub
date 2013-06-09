@@ -30,6 +30,12 @@ namespace InfoHub.ORM.Models
             return dm;
         }
 
+        public static  DynamicModel Open(IConfiguration configuration)
+        {
+            dynamic dm = new DynamicModel(configuration, null);
+            return dm;
+        }
+
         /// <summary>
         /// Create a dynamic model
         /// </summary>
@@ -95,6 +101,10 @@ namespace InfoHub.ORM.Models
             _connectionString = String.Format("Server={0};Port={1};Database={2};Uid={3};Pwd={4};", 
                 configuration.Database, configuration.Port, configuration.Database, configuration.Username, 
                 configuration.Password);
+        }
+
+        protected DynamicModel()
+        {
         }
 
         /// <summary>
@@ -175,6 +185,7 @@ namespace InfoHub.ORM.Models
         /// List out all the schema bits for use with ... whatever
         /// </summary>
         IEnumerable<dynamic> _schema;
+
         public IEnumerable<dynamic> Schema
         {
             get

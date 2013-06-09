@@ -4,17 +4,24 @@ using System.Reflection;
 using InfoHub.Business.Models;
 using InfoHub.Deployer.Helpers;
 using InfoHub.Deployer.Interfaces;
+using InfoHub.ORM.Interfaces;
 using InfoHub.ORM.Models;
+using InfoHub.ORM.Services;
+using IDatabaseDeployer = InfoHub.Deployer.Interfaces.IDatabaseDeployer;
 
 namespace InfoHub.Deployer.Services
 {
     public class MySQLDeployerService : ServiceBase<string>, IDatabaseDeployer
     {
         private readonly Assembly _assembly;
+        private readonly IConfiguration _configuration;
+        private readonly MySQLConnector _connector;
 
-        public MySQLDeployerService(Assembly assembly)
+        public MySQLDeployerService(Assembly assembly, IConfiguration configuration)
         {
             _assembly = assembly;
+            _configuration = configuration;
+            _connector = new MySQLConnector(_configuration, true);
         }
 
         #region Script Runner Code
@@ -82,9 +89,9 @@ namespace InfoHub.Deployer.Services
         }
         #endregion
         
-        public void DeployClass(Configuration cfg, Type type)
+        public void DeployClass(Type type)
         {
-            throw new NotImplementedException();
+            _connector.CreateTable(new Table(type.Name));
         }
 
         public void DeployAllClasses(Assembly asm)
