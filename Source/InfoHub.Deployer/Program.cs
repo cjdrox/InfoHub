@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Reflection;
 using InfoHub.Deployer.Services;
-using InfoHub.Entity.Entities;
 using InfoHub.ORM.Interfaces;
 using InfoHub.ORM.Models;
 using InfoHub.ORM.Services;
@@ -20,12 +19,12 @@ namespace InfoHub.Deployer
             Console.WriteLine("Deployment started!\n");
 
             var connector = new MySQLConnector(configuration, true);
-            connector.CreateDatabase("blah");
+            connector.SwitchDatabase("blah");
 
             Console.ForegroundColor = ConsoleColor.Yellow;
-            deployer.DeployClass(new SystemUser());
-            //deployer.RunAllScripts(null);
-            //Console.WriteLine();
+
+            deployer.DeployAllClasses(null);
+            deployer.RunAllScripts(null);
 
             #region Fluent table creation
 

@@ -8,5 +8,6 @@ namespace InfoHub.ORM.Interfaces
         bool CreateDatabase(string name, bool useDatabase);
         bool DropDatabase(string name);
         bool CreateTable(Func<ITable,ITable> table);
+        bool SwitchDatabase(string name);
     }
 }

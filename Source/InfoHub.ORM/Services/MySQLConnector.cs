@@ -100,16 +100,22 @@ namespace InfoHub.ORM.Services
         {
             var query = "CREATE DATABASE " + name + ";\n";
 
-            if (Query(query))
+            if (Query(query) && useDatabase)
             {
-                Query("USE " + name + ";\n");
-                _configuration = new Configuration(_configuration.Host, name, _configuration.Port, 
-                    _configuration.Username, _configuration.Password);
-                return true;
+                return SwitchDatabase(name);
             }
 
             return false;
         }
+
+        public bool SwitchDatabase(string name)
+        {
+            Query("USE " + name + ";\n");
+            _configuration = new Configuration(_configuration.Host, name, _configuration.Port,
+                _configuration.Username, _configuration.Password);
+            return true;
+        }
+
 
         public bool DropDatabase(string name)
         {

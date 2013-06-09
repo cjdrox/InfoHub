@@ -90,38 +90,76 @@ namespace InfoHub.Deployer.Services
             }
         }
         #endregion
-        
-        public void DeployClass(BaseEntity type)
+
+        #region Class Deployer Code
+
+        public void DeployClass(Type type)
         {
+            if (!typeof (BaseEntity).IsAssignableFrom(type))
+            {
+                throw new ArgumentException(String.Format("NOTE: {0} is not a {1} and will not be deployed",
+                                                          type.Name, typeof (BaseEntity).Name));
+            }
+
+            if (type.Name.Equals(typeof (BaseEntity).Name))
+            {
+                return;
+            }
+
             ITable table = new Table(type.Name);
-            var properties = type.GetType().GetProperties();
+            var properties = type.GetProperties();
 
             table.ColumnTypes = properties
-                .Where(p => !p.Name.ToLower().Equals("name") 
-                    && !p.Name.ToLower().Equals("schema")
-                    && !p.Name.ToLower().Equals("prototype")
-                    && !p.Name.ToLower().Equals("tablename")
-                    && !p.Name.ToLower().Equals("primarykeyfield")
-                    && !p.Name.ToLower().Equals("columntypes")
-                    )
+                .Where(p => !p.Name.ToLower().Equals("name")
+                            && !p.Name.ToLower().Equals("schema")
+                            && !p.Name.ToLower().Equals("prototype")
+                            && !p.Name.ToLower().Equals("tablename")
+                            && !p.Name.ToLower().Equals("primarykeyfield")
+                            && !p.Name.ToLower().Equals("columntypes")
+                )
                 .ToDictionary(r => r.Name, r => new ColumnData
                                                     {
                                                         Type = r.PropertyType
                                                     });
-            
+
             _connector.CreateTable(table);
+            Console.WriteLine();
         }
 
-        public void DeployAllClasses(Assembly asm)
+        public void DeployAllClasses(Assembly asm = null)
         {
             asm = asm ?? _assembly;
 
-            if (asm==null)
+            if (asm == null)
             {
                 throw new ArgumentNullException("asm", "Assembly cannot be null");
             }
 
-            Console.WriteLine("Source assembly: {0}", asm.FullName);
+            Console.WriteLine("Deploying from source assembly:\n {0}", asm.FullName);
+            Console.WriteLine();
+
+            var types = asm.GetTypes();
+
+            foreach (var type in types)
+            {
+                try
+                {
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    DeployClass(type);
+                }
+                catch (Exception e)
+                {
+                    Console.ForegroundColor = (e is ArgumentException
+                                                   ? ConsoleColor.White
+                                                   : Console.ForegroundColor = ConsoleColor.Red);
+
+                    Console.WriteLine(e.Message);
+                    Console.WriteLine();
+                }
+            }
         }
+
+        #endregion
+
     }
 }
