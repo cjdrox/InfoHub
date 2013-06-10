@@ -2,6 +2,8 @@
 using InfoHub.Deployer.Attributes;
 using InfoHub.Deployer.Models;
 using InfoHub.Entity.Entities;
+using InfoHub.ORM.Interfaces;
+using InfoHub.ORM.Services;
 using Infohub.Repository.Repositories;
 
 namespace InfoHub.Deployer.Scripts
@@ -16,10 +18,23 @@ namespace InfoHub.Deployer.Scripts
         }
 
         [Execute]
-        public override bool Execute()
+        public override bool Execute(IConfiguration configuration)
         {
-            var adminUser = new SystemUser{ Username = "admin", Passhash = "test"};
-            var repository = new SystemUserRepository();
+            Configuration = configuration;
+
+            var connector = new MySQLConnector(Configuration);
+            connector.SwitchDatabase("blah");
+
+            var adminUser = new SystemUser
+                                {
+                                    Username = "admin",
+                                    Passhash = "test",
+                                    IsDeleted = false,
+                                    CreatedAt = DateTime.Now,
+                                    ModifiedAt = DateTime.Now,
+                                };
+
+            var repository = new SystemUserRepository(Configuration);
 
             try
             {

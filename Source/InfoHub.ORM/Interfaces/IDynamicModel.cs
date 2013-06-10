@@ -53,7 +53,7 @@ namespace InfoHub.ORM.Interfaces
         /// <summary>
         /// Returns and OpenConnection
         /// </summary>
-        DbConnection OpenConnection();
+        DbConnection OpenConnection(IConfiguration configuration);
 
         /// <summary>
         /// Builds a set of Insert and Update commands based on the passed-on objects.

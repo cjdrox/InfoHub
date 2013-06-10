@@ -24,7 +24,7 @@ namespace InfoHub.Deployer
             Console.ForegroundColor = ConsoleColor.Yellow;
 
             deployer.DeployAllClasses(null);
-            deployer.RunAllScripts(null);
+            deployer.RunAllScripts(Assembly.GetExecutingAssembly());
 
             #region Fluent table creation
 

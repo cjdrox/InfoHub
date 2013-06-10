@@ -71,7 +71,7 @@ namespace InfoHub.Deployer.Services
             {
                 Console.ForegroundColor = ConsoleColor.White;
 
-                if (script.Execute())
+                if (script.Execute(_configuration))
                 {
                     Console.ForegroundColor = ConsoleColor.Green;
                     Console.WriteLine("Script {0} successfully executed!", script);
@@ -116,6 +116,7 @@ namespace InfoHub.Deployer.Services
                             && !p.Name.ToLower().Equals("tablename")
                             && !p.Name.ToLower().Equals("primarykeyfield")
                             && !p.Name.ToLower().Equals("columntypes")
+                            && !p.Name.ToLower().Equals("factory")
                 )
                 .ToDictionary(r => r.Name, r => new ColumnData
                                                     {

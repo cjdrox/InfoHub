@@ -1,21 +1,30 @@
 ﻿using System;
 using System.Collections.Generic;
+using InfoHub.ORM.Interfaces;
+using InfoHub.ORM.Models;
 using Infohub.Repository.Interfaces;
 
 namespace Infohub.Repository.Repositories
 {
-    public class RepositoryBase<T> : IRepository<T> where T : class
+    public class RepositoryBase<T> : IRepository<T> where T : DynamicModel
     {
+        private readonly IConfiguration _configuration;
+
+        public RepositoryBase(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
+
         public T Add(T item)
         {
-            //using (var session = SessionFactoryHelper.OpenSession())
-            //{
-            //    using (var transaction = session.BeginTransaction())
-            //    {
-            //        session.Save(item);
-            //        transaction.Commit();
-            //    }
-            //}
+            using (var session = item.OpenConnection(_configuration))
+            {
+                using (var transaction = session.BeginTransaction())
+                {
+                    item.Insert(item);
+                    transaction.Commit();
+                }
+            }
 
             return item;
         }

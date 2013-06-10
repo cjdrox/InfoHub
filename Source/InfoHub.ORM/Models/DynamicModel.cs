@@ -21,7 +21,7 @@ namespace InfoHub.ORM.Models
     {
         const string ProviderName = "MySql.Data.MySqlClient";
 
-        private readonly DbProviderFactory _factory;
+        public DbProviderFactory Factory { get; protected set; }
         private readonly string _connectionString;
 
         public static DynamicModel Open(string connectionStringName)
@@ -47,24 +47,7 @@ namespace InfoHub.ORM.Models
             TableName = string.IsNullOrEmpty(tableName) ? GetType().Name : tableName;
             PrimaryKeyField = string.IsNullOrEmpty(primaryKeyField) ? "ID" : primaryKeyField;
 
-            try
-            {
-                _factory = DbProviderFactories.GetFactory(ProviderName);
-            }
-            catch (FileLoadException ex)
-            {
-                throw new MassiveException(string.Format("Could not load the specified provider: {0}. Have you added a reference to the correct assembly?", ProviderName), ex);
-            }
-            catch (ArgumentException e)
-            {
-                var foundClasses = "I did find these Factories:";
-                var dt = DbProviderFactories.GetFactoryClasses();
-                for (var i = 0; i < dt.Rows.Count; i++)
-                    foundClasses += String.Format("|{0}|", dt.Rows[i][2]);
-
-                throw new ArgumentException(String.Format("{0}{1}{2}", e.Message, Environment.NewLine, foundClasses));
-
-            }
+            SetFactory();
 
             var conString = ConfigurationManager.ConnectionStrings[connectionStringName];
             _connectionString = conString != null ? conString.ConnectionString : connectionStringName;
@@ -80,13 +63,25 @@ namespace InfoHub.ORM.Models
             TableName = table.Name;
             PrimaryKeyField = table.ColumnTypes.FirstOrDefault(column => column.Value.IsPrimary).ToString();
 
+            SetFactory();
+
+            _connectionString = String.Format("Server={0};Port={1};Database={2};Uid={3};Pwd={4};", 
+                configuration.Database, configuration.Port, configuration.Database, configuration.Username, 
+                configuration.Password);
+        }
+
+        private void SetFactory()
+        {
             try
             {
-                _factory = DbProviderFactories.GetFactory(ProviderName);
+                Factory = DbProviderFactories.GetFactory(ProviderName);
             }
             catch (FileLoadException ex)
             {
-                throw new MassiveException(string.Format("Could not load the specified provider: {0}. Have you added a reference to the correct assembly?", ProviderName), ex);
+                throw new MassiveException(
+                    string.Format(
+                        "Could not load the specified provider: {0}. Have you added a reference to the correct assembly?",
+                        ProviderName), ex);
             }
             catch (ArgumentException e)
             {
@@ -97,14 +92,11 @@ namespace InfoHub.ORM.Models
 
                 throw new ArgumentException(String.Format("{0}{1}{2}", e.Message, Environment.NewLine, foundClasses));
             }
-
-            _connectionString = String.Format("Server={0};Port={1};Database={2};Uid={3};Pwd={4};", 
-                configuration.Database, configuration.Port, configuration.Database, configuration.Username, 
-                configuration.Password);
         }
 
         protected DynamicModel()
         {
+            SetFactory();
         }
 
         /// <summary>
@@ -265,7 +257,7 @@ namespace InfoHub.ORM.Models
         /// </summary>
         private DbCommand CreateCommand(string sql, DbConnection conn, params object[] args)
         {
-            using (var result = _factory.CreateCommand())
+            using (var result = Factory.CreateCommand())
             {
                 if (result != null)
                 {
@@ -282,16 +274,32 @@ namespace InfoHub.ORM.Models
         /// <summary>
         /// Returns and OpenConnection
         /// </summary>
-        public DbConnection OpenConnection()
+        public DbConnection OpenConnection(IConfiguration configuration = null)
         {
-            var result = _factory.CreateConnection();
-            if (result != null)
-            {
-                result.ConnectionString = _connectionString;
-                result.Open();
-                return result;
-            }
+            var result = Factory.CreateConnection();
 
+            if (configuration==null)
+            {
+                if (result != null)
+                {
+                    result.ConnectionString = _connectionString;
+                    result.Open();
+                    return result;
+                }
+            }
+            else
+            {
+                var connectionString = "SERVER=" + configuration.Host + ";"
+                + "DATABASE=" + configuration.Database + ";"
+                + "UID=" + configuration.Username + ";"
+                + "PASSWORD=" + configuration.Password + ";";
+
+                if (result!=null)
+                {
+                    result.ConnectionString = connectionString;
+                }
+            }
+            
             return null;
         }
 
@@ -333,7 +341,7 @@ namespace InfoHub.ORM.Models
         /// <summary>
         /// Executes a series of DBCommands in a transaction
         /// </summary>
-        public int Execute(IEnumerable<DbCommand> commands)
+        public virtual int Execute(IEnumerable<DbCommand> commands)
         {
             var result = 0;
             using (var conn = OpenConnection())
@@ -389,9 +397,19 @@ namespace InfoHub.ORM.Models
             var result = CreateCommand(stub, null);
             var counter = 0;
 
+            settings = settings
+                .Where(p => !p.Key.ToLower().Equals("name")
+                            && !p.Key.ToLower().Equals("schema")
+                            && !p.Key.ToLower().Equals("prototype")
+                            && !p.Key.ToLower().Equals("tablename")
+                            && !p.Key.ToLower().Equals("primarykeyfield")
+                            && !p.Key.ToLower().Equals("columntypes")
+                            && !p.Key.ToLower().Equals("factory")
+                ).ToDictionary(r=>r.Key, r=>r.Value);
+
             foreach (var item in settings)
             {
-                sbKeys.AppendFormat("{0},", item.Key);
+                sbKeys.AppendFormat("`{0}`,", item.Key);
                 sbVals.AppendFormat("@{0},", counter);
                 result.AddParam(item.Value);
                 counter++;

@@ -1,5 +1,6 @@
 ﻿using System;
 using InfoHub.Deployer.Interfaces;
+using InfoHub.ORM.Interfaces;
 
 namespace InfoHub.Deployer.Models
 {
@@ -12,6 +13,8 @@ namespace InfoHub.Deployer.Models
         {
             get { return _id; }
         }
+
+        public IConfiguration Configuration { get; set; }
 
         public string Author { get; set; }
         public DateTime CreatedAt { get; set; }
@@ -28,7 +31,7 @@ namespace InfoHub.Deployer.Models
             CreatedAt = createdAt;
         }
 
-        public virtual bool Execute()
+        public virtual bool Execute(IConfiguration configuration)
         {
             return false;
         }

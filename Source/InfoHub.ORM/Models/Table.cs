@@ -4,7 +4,7 @@ using InfoHub.ORM.Types;
 
 namespace InfoHub.ORM.Models
 {
-    public class Table : DynamicModel, ITable
+    public class Table : ExtendedDynamicModel, ITable
     {
         public string Name { get; set; }
         public IDictionary<string, ColumnData> ColumnTypes { get; set; }
@@ -12,11 +12,13 @@ namespace InfoHub.ORM.Models
         public Table(string name)
         {
             Name = name;
+            TableName = Name;
             ColumnTypes = new Dictionary<string, ColumnData>();
         }
 
-        public Table() : this(null)
+        public Table()
         {
+            ColumnTypes = new Dictionary<string, ColumnData>();
         }
 
         #region Fluent Interface
