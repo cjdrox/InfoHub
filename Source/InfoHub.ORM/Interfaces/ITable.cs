@@ -5,7 +5,7 @@ namespace InfoHub.ORM.Interfaces
 {
     public interface ITable
     {
-        string Name { get; set; }
+        string TableName { get; set; }
         IDictionary<string, ColumnData> ColumnTypes { get; set; }
         ITable WithName(string name);
         ITable WithColumn<T>(string name);

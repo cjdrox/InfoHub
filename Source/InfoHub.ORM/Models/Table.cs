@@ -6,13 +6,11 @@ namespace InfoHub.ORM.Models
 {
     public class Table : ExtendedDynamicModel, ITable
     {
-        public string Name { get; set; }
         public IDictionary<string, ColumnData> ColumnTypes { get; set; }
 
         public Table(string name)
         {
-            Name = name;
-            TableName = Name;
+            TableName = name;
             ColumnTypes = new Dictionary<string, ColumnData>();
         }
 
@@ -25,7 +23,7 @@ namespace InfoHub.ORM.Models
 
         public ITable WithName(string name)
         {
-            Name = name;
+            TableName = name;
             return this;
         }
 

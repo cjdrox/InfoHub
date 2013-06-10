@@ -12,7 +12,7 @@ namespace InfoHub.Deployer
     {
         static void Main()
         {
-            IConfiguration configuration = new Configuration("localhost", "", "3308", "root", "");
+            IConfiguration configuration = new Configuration("localhost", "blah", "3308", "root", "");
             IDatabaseDeployer deployer = new MySQLDeployerService(Assembly.Load("InfoHub.Entity"), configuration);
 
             Console.ForegroundColor = ConsoleColor.Green;

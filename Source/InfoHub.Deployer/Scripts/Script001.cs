@@ -21,7 +21,7 @@ namespace InfoHub.Deployer.Scripts
         public override bool Execute(IConfiguration configuration)
         {
             Configuration = configuration;
-
+            
             var connector = new MySQLConnector(Configuration);
             connector.SwitchDatabase("blah");
 

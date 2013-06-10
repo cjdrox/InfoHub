@@ -126,7 +126,7 @@ namespace InfoHub.ORM.Services
 
         public bool CreateTable(ITable source)
         {
-            var query = String.Format("CREATE TABLE `{0}` (", source.Name);
+            var query = String.Format("CREATE TABLE `{0}` (", source.TableName);
 
             foreach (var columnType in source.ColumnTypes)
             {

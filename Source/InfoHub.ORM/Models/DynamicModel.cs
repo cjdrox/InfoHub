@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.Configuration;
 using System.Data;
 using System.Data.Common;
 using System.Data.SqlClient;
@@ -19,16 +18,9 @@ namespace InfoHub.ORM.Models
     /// </summary>
     public class DynamicModel : DynamicObject, IDynamicModel
     {
+        private readonly IConfiguration _configuration;
         const string ProviderName = "MySql.Data.MySqlClient";
-
         public DbProviderFactory Factory { get; protected set; }
-        private readonly string _connectionString;
-
-        public static DynamicModel Open(string connectionStringName)
-        {
-            dynamic dm = new DynamicModel(connectionStringName);
-            return dm;
-        }
 
         public static  DynamicModel Open(IConfiguration configuration)
         {
@@ -36,38 +28,21 @@ namespace InfoHub.ORM.Models
             return dm;
         }
 
-        /// <summary>
-        /// Create a dynamic model
-        /// </summary>
-        /// <param name="connectionStringName">the connection string name or the connection stirng itself</param>
-        /// <param name="tableName">the table name</param>
-        /// <param name="primaryKeyField">the primary key field name</param>
-        public DynamicModel(string connectionStringName, string tableName = "", string primaryKeyField = "")
+        public DynamicModel(string tableName = "", string primaryKeyField = "")
         {
             TableName = string.IsNullOrEmpty(tableName) ? GetType().Name : tableName;
             PrimaryKeyField = string.IsNullOrEmpty(primaryKeyField) ? "ID" : primaryKeyField;
 
             SetFactory();
-
-            var conString = ConfigurationManager.ConnectionStrings[connectionStringName];
-            _connectionString = conString != null ? conString.ConnectionString : connectionStringName;
         }
 
-        /// <summary>
-        /// Creates a dynamic model out of <see cref="IConfiguration"/> and <see cref="ITable"/> objects
-        /// </summary>
-        /// <param name="configuration">An <see cref="IConfiguration"/> object which provides database parameters</param>
-        /// <param name="table">An <see cref="ITable"/> object which provides table parameters</param>
         public DynamicModel(IConfiguration configuration, ITable table)
         {
-            TableName = table.Name;
+            _configuration = configuration;
+            TableName = table.TableName;
             PrimaryKeyField = table.ColumnTypes.FirstOrDefault(column => column.Value.IsPrimary).ToString();
 
             SetFactory();
-
-            _connectionString = String.Format("Server={0};Port={1};Database={2};Uid={3};Pwd={4};", 
-                configuration.Database, configuration.Port, configuration.Database, configuration.Username, 
-                configuration.Password);
         }
 
         private void SetFactory()
@@ -218,7 +193,8 @@ namespace InfoHub.ORM.Models
         /// </summary>
         public void QueryAsync(string sql, Action<List<dynamic>> callback, params object[] args)
         {
-            using (var conn = new SqlConnection(_connectionString))
+            const string connectionString = "";
+            using (var conn = new SqlConnection(connectionString))
             {
                 var cmd = new SqlCommand(sql, conn);
                 cmd.AddParams(args);
@@ -274,32 +250,26 @@ namespace InfoHub.ORM.Models
         /// <summary>
         /// Returns and OpenConnection
         /// </summary>
+        /// //TODO: CHAMEERA - Get rid of connection strings
         public DbConnection OpenConnection(IConfiguration configuration = null)
         {
             var result = Factory.CreateConnection();
 
-            if (configuration==null)
+            if (configuration != null)
             {
+                var connectionString = "SERVER=" + configuration.Host + ";"
+                                       + "DATABASE=" + configuration.Database + ";"
+                                       + "UID=" + configuration.Username + ";"
+                                       + "PASSWORD=" + configuration.Password + ";";
+
                 if (result != null)
                 {
-                    result.ConnectionString = _connectionString;
+                    result.ConnectionString = connectionString;
                     result.Open();
                     return result;
                 }
             }
-            else
-            {
-                var connectionString = "SERVER=" + configuration.Host + ";"
-                + "DATABASE=" + configuration.Database + ";"
-                + "UID=" + configuration.Username + ";"
-                + "PASSWORD=" + configuration.Password + ";";
 
-                if (result!=null)
-                {
-                    result.ConnectionString = connectionString;
-                }
-            }
-            
             return null;
         }
 

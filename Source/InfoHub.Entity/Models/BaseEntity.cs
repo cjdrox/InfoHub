@@ -15,8 +15,7 @@ namespace InfoHub.Entity.Models
         public BaseEntity()
         {
             Id = Guid.NewGuid();
-            Name = GetType().Name;
-            TableName = Name;
+            TableName = GetType().Name;
         }
     }
 }
