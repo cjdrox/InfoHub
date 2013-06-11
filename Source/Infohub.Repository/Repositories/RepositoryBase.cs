@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using InfoHub.ORM.Interfaces;
 using InfoHub.ORM.Models;
 using Infohub.Repository.Interfaces;
@@ -33,32 +34,40 @@ namespace Infohub.Repository.Repositories
         {
             IList<T> list = new List<T>();
 
-            //using (var session = SessionFactoryHelper.OpenSession())
-            //{
-            //    using (var transaction = session.BeginTransaction())
-            //    {
-            //        foreach (var item in items)
-            //        {
-            //            session.Save(item);
-            //            list.Add(item);
-            //        }
-            //        transaction.Commit();
-            //    }
-            //}
+            var itemList = items as List<T> ?? items.ToList();
+            if (items!=null && itemList.Any())
+            {
+                var hold = itemList.First();
 
-            return list;
+                using (var session = hold.OpenConnection(_configuration))
+                {
+                    using (var transaction = session.BeginTransaction())
+                    {
+                        foreach (var item in itemList)
+                        {
+                            item.Save();
+                            list.Add(item);
+                        }
+                        transaction.Commit();
+                    }
+                }
+
+                return list;
+            }
+
+            return null;
         }
 
         public T Update(T item)
         {
-            //using (var session = SessionFactoryHelper.OpenSession())
-            //{
-            //    using (var transaction = session.BeginTransaction())
-            //    {
-            //        session.Update(item);
-            //        transaction.Commit();
-            //    }
-            //}
+            using (var session = item.OpenConnection())
+            {
+                using (var transaction = session.BeginTransaction())
+                {
+                    item.Update(item, item);
+                    transaction.Commit();
+                }
+            }
 
             return item;
         }

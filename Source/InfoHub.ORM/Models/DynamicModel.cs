@@ -18,7 +18,7 @@ namespace InfoHub.ORM.Models
     /// </summary>
     public class DynamicModel : DynamicObject, IDynamicModel
     {
-        private readonly IConfiguration _configuration;
+        private IConfiguration _configuration;
         const string ProviderName = "MySql.Data.MySqlClient";
         public DbProviderFactory Factory { get; protected set; }
 
@@ -26,14 +26,6 @@ namespace InfoHub.ORM.Models
         {
             dynamic dm = new DynamicModel(configuration, null);
             return dm;
-        }
-
-        public DynamicModel(string tableName = "", string primaryKeyField = "")
-        {
-            TableName = string.IsNullOrEmpty(tableName) ? GetType().Name : tableName;
-            PrimaryKeyField = string.IsNullOrEmpty(primaryKeyField) ? "ID" : primaryKeyField;
-
-            SetFactory();
         }
 
         public DynamicModel(IConfiguration configuration, ITable table)
@@ -250,24 +242,21 @@ namespace InfoHub.ORM.Models
         /// <summary>
         /// Returns and OpenConnection
         /// </summary>
-        /// //TODO: CHAMEERA - Get rid of connection strings
         public DbConnection OpenConnection(IConfiguration configuration = null)
         {
             var result = Factory.CreateConnection();
+            configuration = configuration ?? _configuration;
 
-            if (configuration != null)
+            if (result != null)
             {
-                var connectionString = "SERVER=" + configuration.Host + ";"
-                                       + "DATABASE=" + configuration.Database + ";"
-                                       + "UID=" + configuration.Username + ";"
-                                       + "PASSWORD=" + configuration.Password + ";";
+                result.ConnectionString = configuration.ConnectionString;
+                result.Open();
 
-                if (result != null)
+                if (_configuration==null)
                 {
-                    result.ConnectionString = connectionString;
-                    result.Open();
-                    return result;
+                    _configuration = configuration;
                 }
+                return result;
             }
 
             return null;

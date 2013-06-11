@@ -11,6 +11,16 @@ namespace InfoHub.ORM.Models
         public string Username { get; set; }
         public string Password { get; set; }
         public bool IsValid { get; protected set; }
+
+        public string ConnectionString
+        {
+            get
+            {
+                return string.Format("SERVER={0}; DATABASE={1}; UID= {2}; PASSWORD={3};",
+                    Host, Database, Username, Password);
+            }
+        }
+
         public Dictionary<string, string> AdditionalParameters { get; set; }
 
         public ConfigurationBase(string host, string database, string port, string username, string password)

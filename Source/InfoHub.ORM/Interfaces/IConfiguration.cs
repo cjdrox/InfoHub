@@ -10,5 +10,6 @@ namespace InfoHub.ORM.Interfaces
         string Username { get; set; }
         string Password { get; set; }
         bool IsValid { get; }
+        string ConnectionString { get; }
     }
 }
