@@ -6,9 +6,9 @@ namespace InfoHub.Deployer.Interfaces
 {
     public interface IDatabaseDeployer : IService<string>
     {
-        void RunAllScripts(Assembly asm);
+        void RunAllScripts(Assembly asm, bool runSilently);
         void DeployClass(Type type);
         void DeployAllClasses(Assembly asm);
-        void RunScript(Assembly asm, Type type);
+        void RunScript(Assembly asm, Type type, bool runSilently);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Reflection;
 using InfoHub.Deployer.Services;
 using InfoHub.ORM.Interfaces;
@@ -10,8 +11,10 @@ namespace InfoHub.Deployer
 {
     public class Program
     {
-        static void Main()
+        static void Main(string[] args)
         {
+            var runAllScripts = args.Select(arg=>arg.ToLower()).Contains("/runscripts");
+
             IConfiguration configuration = new Configuration("localhost", "blah", "3308", "root", "");
             IDatabaseDeployer deployer = new MySQLDeployerService(Assembly.Load("InfoHub.Entity"), configuration);
 
@@ -24,7 +27,7 @@ namespace InfoHub.Deployer
             Console.ForegroundColor = ConsoleColor.Yellow;
 
             deployer.DeployAllClasses(null);
-            deployer.RunAllScripts(Assembly.GetExecutingAssembly());
+            deployer.RunAllScripts(Assembly.GetExecutingAssembly(), runAllScripts);
 
             #region Fluent table creation
 

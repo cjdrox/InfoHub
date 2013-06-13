@@ -27,7 +27,7 @@ namespace InfoHub.Deployer.Services
         }
 
         #region Script Runner Code
-        public void RunAllScripts(Assembly assembly)
+        public void RunAllScripts(Assembly assembly, bool runSilently = false)
         {
             var asm = (assembly ?? _assembly);
             var types = asm.GetTypes();
@@ -42,7 +42,7 @@ namespace InfoHub.Deployer.Services
             {
                 try
                 {
-                    RunScript(asm, type);
+                    RunScript(asm, type, runSilently);
                 }
                 catch (Exception e)
                 {
@@ -52,22 +52,25 @@ namespace InfoHub.Deployer.Services
             }
         }
 
-        public void RunScript(Assembly asm, Type type)
+        public void RunScript(Assembly asm, Type type, bool runSilently = false)
         {
             var script = (IScript)asm.CreateInstance(type.FullName);
 
             if (script == null) return;
             Console.ForegroundColor = ConsoleColor.Yellow;
 
-            string readLine;
-            for (readLine = null;
-                 readLine == null || !(readLine.ToLower() == "n" || readLine.ToLower() == "y");
-                 readLine = Console.ReadLine())
+            var readLine = String.Empty;
+            if (!runSilently)
             {
-                Console.Write(String.Concat("Execute script: ", script, " by ", script.Author.ToUpper(), "? (Y/N)"));
+                for (readLine = null;
+                     readLine == null || !(readLine.ToLower() == "n" || readLine.ToLower() == "y");
+                     readLine = Console.ReadLine())
+                {
+                    Console.Write(String.Concat("Execute script: ", script, " by ", script.Author.ToUpper(), "? (Y/N)"));
+                }   
             }
-
-            if (readLine.ToLower() == "y")
+            
+            if (runSilently || readLine.ToLower() == "y")
             {
                 Console.ForegroundColor = ConsoleColor.White;
 
