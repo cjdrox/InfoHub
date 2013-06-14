@@ -3,17 +3,17 @@ using InfoHub.ORM.Interfaces;
 
 namespace InfoHub.ORM.Models
 {
-    public class ExtendedDynamicModel : DynamicModel
+    public class TransactedModel : DynamicModel
     {
         // Lets add two properties that we will reference in our overridden Execute method
         public System.Data.IDbConnection Connection;
         public System.Data.IDbTransaction Transaction;
 
-        protected ExtendedDynamicModel(IConfiguration configuration, ITable table): base(configuration, table)
+        protected TransactedModel(IConfiguration configuration, ITable table): base(configuration, table)
         {
         }
 
-        protected ExtendedDynamicModel()
+        protected TransactedModel()
         {
         }
 

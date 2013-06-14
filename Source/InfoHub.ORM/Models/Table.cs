@@ -4,7 +4,7 @@ using InfoHub.ORM.Types;
 
 namespace InfoHub.ORM.Models
 {
-    public class Table : ExtendedDynamicModel, ITable
+    public class Table : TransactedModel, ITable
     {
         public IDictionary<string, ColumnData> ColumnTypes { get; set; }
 

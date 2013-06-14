@@ -42,7 +42,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Models\ExtendedDynamicModel.cs" />
+    <Compile Include="Models\TransactedModel.cs" />
     <Compile Include="Models\Configuration.cs" />
     <Compile Include="Models\ConfigurationBase.cs" />
     <Compile Include="Models\DynamicModel.cs" />
