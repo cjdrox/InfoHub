@@ -42,6 +42,7 @@
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Data" />
   </ItemGroup>
   <ItemGroup>
     <CodeAnalysisDependentAssemblyPaths Condition=" '$(VS100COMNTOOLS)' != '' " Include="$(VS100COMNTOOLS)..\IDE\PrivateAssemblies">
@@ -49,8 +50,15 @@
     </CodeAnalysisDependentAssemblyPaths>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DynamicModelTestFixture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ORMTestFixture.cs" />
+    <Compile Include="BaseClassTestFixture.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Infohub.Repository\Infohub.Repository.csproj">
+      <Project>{832B421A-47FA-4BC1-BE79-E98FAA34D560}</Project>
+      <Name>Infohub.Repository</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

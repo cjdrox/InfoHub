@@ -21,6 +21,7 @@ namespace InfoHub.ORM.Models
         private IConfiguration _configuration;
         const string ProviderName = "MySql.Data.MySqlClient";
         public DbProviderFactory Factory { get; protected set; }
+        public IDbConnection Connection { get; protected set; }
 
         public static  DynamicModel Open(IConfiguration configuration)
         {
@@ -31,9 +32,13 @@ namespace InfoHub.ORM.Models
         public DynamicModel(IConfiguration configuration, ITable table)
         {
             _configuration = configuration;
-            TableName = table.TableName;
-            PrimaryKeyField = table.ColumnTypes.FirstOrDefault(column => column.Value.IsPrimary).ToString();
 
+            if (table!=null)
+            {
+                TableName = table.TableName;
+                PrimaryKeyField = table.ColumnTypes.FirstOrDefault(column => column.Value.IsPrimary).ToString();
+            }
+            
             SetFactory();
         }
 
@@ -244,19 +249,14 @@ namespace InfoHub.ORM.Models
         /// </summary>
         public DbConnection OpenConnection(IConfiguration configuration = null)
         {
-            var result = Factory.CreateConnection();
+            Connection = Factory.CreateConnection();
             configuration = configuration ?? _configuration;
 
-            if (result != null)
+            if (Connection != null && configuration != null)
             {
-                result.ConnectionString = configuration.ConnectionString;
-                result.Open();
-
-                if (_configuration==null)
-                {
-                    _configuration = configuration;
-                }
-                return result;
+                Connection.ConnectionString = configuration.ConnectionString;
+                Connection.Open();
+                return (DbConnection) Connection;
             }
 
             return null;

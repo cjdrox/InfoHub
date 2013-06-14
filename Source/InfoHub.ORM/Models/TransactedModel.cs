@@ -6,7 +6,6 @@ namespace InfoHub.ORM.Models
     public class TransactedModel : DynamicModel
     {
         // Lets add two properties that we will reference in our overridden Execute method
-        public System.Data.IDbConnection Connection;
         public System.Data.IDbTransaction Transaction;
 
         protected TransactedModel(IConfiguration configuration, ITable table): base(configuration, table)

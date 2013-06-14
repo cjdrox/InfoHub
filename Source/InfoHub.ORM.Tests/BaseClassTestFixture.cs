@@ -6,7 +6,7 @@ using NUnit.Framework;
 namespace InfoHub.ORM.Tests
 {
     [TestFixture]
-    public class ORMTestFixture
+    public class BaseClassTestFixture
     {
         [Test]
         public void TestConfiguration()
