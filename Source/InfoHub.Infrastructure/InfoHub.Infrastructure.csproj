@@ -44,14 +44,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Email\MailSender.cs" />
+    <Compile Include="FTP\FTP.cs" />
     <Compile Include="Logging\LogEventType.cs" />
     <Compile Include="Logging\Logger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SafeCall\LogAnd.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="FTP\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Content Include="NLog.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

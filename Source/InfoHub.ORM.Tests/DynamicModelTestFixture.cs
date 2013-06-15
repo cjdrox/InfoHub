@@ -14,6 +14,25 @@ namespace InfoHub.ORM.Tests
             IConfiguration configuration = new Configuration("localhost", "blah", "3308", "root", "");
 
             // Execute
+            TransactedModel model = new Test();
+            var dead = model.OpenConnection();
+            var live = model.OpenConnection(configuration);
+            var mock = DynamicModel.Open(configuration);
+
+            // Assert
+            Assert.IsNotNull(live);
+            Assert.IsNull(dead);
+            Assert.IsNotNull(mock);
+            Assert.IsNotNull(mock.OpenConnection());
+        }
+
+        [Test]
+        public void TestExplicitCreation()
+        {
+            // Setup
+            IConfiguration configuration = new Configuration("localhost", "blah", "3308", "root", "");
+
+            // Execute
             TransactedModel model = new Table("Test");
             var dead = model.OpenConnection();
             var live = model.OpenConnection(configuration);
