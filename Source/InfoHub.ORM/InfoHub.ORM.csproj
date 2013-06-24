@@ -49,14 +49,15 @@
     <Compile Include="Interfaces\IDynamicModel.cs" />
     <Compile Include="Models\ObjectExtensions.cs" />
     <Compile Include="Models\Table.cs" />
+    <Compile Include="Services\ConnectionExtensions.cs" />
     <Compile Include="Types\ColumnData.cs" />
     <Compile Include="Types\ConnectionResult.cs" />
     <Compile Include="Helpers\Conversion.cs" />
     <Compile Include="Interfaces\IConfiguration.cs" />
-    <Compile Include="Interfaces\IDatabaseConnector.cs" />
+    <Compile Include="Interfaces\IDatabaseAdapter.cs" />
     <Compile Include="Interfaces\IDatabaseDeployer.cs" />
     <Compile Include="Interfaces\ITable.cs" />
-    <Compile Include="Services\MySQLConnector.cs" />
+    <Compile Include="Services\MySQLAdapter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

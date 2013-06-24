@@ -17,13 +17,13 @@ namespace InfoHub.Deployer.Services
     {
         private readonly Assembly _assembly;
         private readonly IConfiguration _configuration;
-        private readonly MySQLConnector _connector;
+        private readonly MySQLAdapter _adapter;
 
         public MySQLDeployerService(Assembly assembly, IConfiguration configuration)
         {
             _assembly = assembly;
             _configuration = configuration;
-            _connector = new MySQLConnector(_configuration, true);
+            _adapter = new MySQLAdapter(_configuration, true);
         }
 
         #region Script Runner Code
@@ -77,19 +77,18 @@ namespace InfoHub.Deployer.Services
                 if (script.Execute(_configuration))
                 {
                     Console.ForegroundColor = ConsoleColor.Green;
-                    Console.WriteLine("Script {0} successfully executed!", script);
+                    Console.WriteLine("Script {0} by {1} successfully executed!", script, script.Author);
                 }
                 else
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("Script {0} did not execute successfully.", script);
+                    Console.WriteLine("Script {0} by {1} did not execute successfully.", script, script.Author);
                 }
-
             }
             else
             {
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine("Script " + script + " skipped!");
+                Console.ForegroundColor = ConsoleColor.Blue;
+                Console.WriteLine("Script {0} by {1} skipped!", script, script.Author);
             }
         }
         #endregion
@@ -120,13 +119,14 @@ namespace InfoHub.Deployer.Services
                             && !p.Name.ToLower().Equals("primarykeyfield")
                             && !p.Name.ToLower().Equals("columntypes")
                             && !p.Name.ToLower().Equals("factory")
+                            && !p.Name.ToLower().Equals("connection")
                 )
                 .ToDictionary(r => r.Name, r => new ColumnData
                                                     {
                                                         Type = r.PropertyType
                                                     });
 
-            _connector.CreateTable(table);
+            _adapter.CreateTable(table);
             Console.WriteLine();
         }
 
@@ -165,5 +165,9 @@ namespace InfoHub.Deployer.Services
 
         #endregion
 
+        public override void Dispose()
+        {
+            _adapter.CloseConnection();
+        }
     }
 }

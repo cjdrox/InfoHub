@@ -18,7 +18,7 @@ namespace InfoHub.ORM.Models
     /// </summary>
     public class DynamicModel : DynamicObject, IDynamicModel
     {
-        private IConfiguration _configuration;
+        private readonly IConfiguration _configuration;
         const string ProviderName = "MySql.Data.MySqlClient";
         public DbProviderFactory Factory { get; protected set; }
         public IDbConnection Connection { get; protected set; }

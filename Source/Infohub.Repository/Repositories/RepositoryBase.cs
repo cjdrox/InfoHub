@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using InfoHub.ORM.Services;
 using System.Linq;
 using InfoHub.ORM.Interfaces;
 using InfoHub.ORM.Models;
@@ -7,22 +8,22 @@ using Infohub.Repository.Interfaces;
 
 namespace Infohub.Repository.Repositories
 {
-    public class RepositoryBase<T> : IRepository<T> where T : DynamicModel
+    public class RepositoryBase<T> : IRepository<T> where T : Table, new()
     {
-        private readonly IConfiguration _configuration;
+        private readonly IDatabaseAdapter _adapter;
 
-        public RepositoryBase(IConfiguration configuration)
+        public RepositoryBase(IDatabaseAdapter adapter)
         {
-            _configuration = configuration;
+            _adapter = adapter;
         }
 
         public T Add(T item)
         {
-            using (var session = item.OpenConnection(_configuration))
+            using (var session = _adapter.OpenConnection())
             {
                 using (var transaction = session.BeginTransaction())
                 {
-                    item.Insert(item);
+                    session.Insert(item);
                     transaction.Commit();
                 }
             }
@@ -37,15 +38,13 @@ namespace Infohub.Repository.Repositories
             var itemList = items as List<T> ?? items.ToList();
             if (items!=null && itemList.Any())
             {
-                var hold = itemList.First();
-
-                using (var session = hold.OpenConnection(_configuration))
+                using (var session = _adapter.OpenConnection())
                 {
                     using (var transaction = session.BeginTransaction())
                     {
                         foreach (var item in itemList)
                         {
-                            item.Save();
+                            session.Insert(item);
                             list.Add(item);
                         }
                         transaction.Commit();
@@ -60,11 +59,11 @@ namespace Infohub.Repository.Repositories
 
         public T Update(T item)
         {
-            using (var session = item.OpenConnection())
+            using (var session = _adapter.OpenConnection())
             {
                 using (var transaction = session.BeginTransaction())
                 {
-                    item.Update(item, item);
+                    //session.Update(item);
                     transaction.Commit();
                 }
             }
@@ -86,11 +85,19 @@ namespace Infohub.Repository.Repositories
             return item;
         }
 
-        public T Get(Guid userGuid)
+        public T Get(Guid id)
         {
-            //using (var session = SessionFactoryHelper.OpenSession())
-            //    return session.Get<T>(userGuid);
-            throw new NotImplementedException();
+            T item;
+            using (var session = _adapter.OpenConnection())
+            {
+                using (var transaction = session.BeginTransaction())
+                {
+                    item = session.Query<T>(null).FirstOrDefault();
+                    transaction.Commit();
+                }
+            }
+
+            return item;
         }
 
         public IEnumerable<T> GetAll()

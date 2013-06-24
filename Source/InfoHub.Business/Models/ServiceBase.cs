@@ -24,5 +24,9 @@ namespace InfoHub.Business.Models
         {
             return NullResponse;
         }
+
+        public virtual void Dispose()
+        {
+        }
     }
 }

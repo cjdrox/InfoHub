@@ -1,4 +1,6 @@
-﻿namespace InfoHub.ORM.Helpers
+﻿using System;
+
+namespace InfoHub.ORM.Helpers
 {
     public static class Conversion
     {
@@ -19,6 +21,11 @@
                 default:
                     return typeName;
             }
+        }
+
+        public static object ToType(this string value, Type t)
+        {
+            return Convert.ChangeType(value, t);
         }
     }
 }

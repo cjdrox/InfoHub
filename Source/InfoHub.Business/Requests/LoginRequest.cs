@@ -1,24 +1,9 @@
-﻿using System;
-using InfoHub.Business.Attributes;
-using InfoHub.Business.Interfaces;
-using InfoHub.Entity.Domain;
+﻿using InfoHub.Business.Models;
+using InfoHub.Entity.Entities;
 
 namespace InfoHub.Business.Requests
 {
-    public sealed class LoginRequest : ILoginRequest
+    public class LoginRequest : ServiceRequest<SystemUser>
     {
-        public bool Sumbitted { get; set; }
-
-        [RequiredField, OperativeField(Discrete = true, Sortable = true)]
-        public string Username { get; set; }
-
-        [RequiredField]
-        public string Password { get; set; }
-        public bool Remember { get; set; }
-        public bool ForgottenPassword { get; set; }
-        public DateTime RequestedAt { get; set; }
-        public IBusinessEvent EventData { get; set; }
-
-        public AccountProfile Data { get; set; }
     }
 }

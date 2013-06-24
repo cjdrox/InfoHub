@@ -55,6 +55,10 @@
       <Project>{E9325E05-96A9-4C20-B25E-949504AC6F63}</Project>
       <Name>InfoHub.ORM</Name>
     </ProjectReference>
+    <ProjectReference Include="..\InfoHub.Security\InfoHub.Security.csproj">
+      <Project>{5A51F3AF-CFC5-4833-92AF-A81B70D3D7CB}</Project>
+      <Name>InfoHub.Security</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Helpers\" />

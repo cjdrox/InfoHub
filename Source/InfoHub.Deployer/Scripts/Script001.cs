@@ -22,19 +22,21 @@ namespace InfoHub.Deployer.Scripts
         {
             Configuration = configuration;
             
-            var connector = new MySQLConnector(Configuration);
-            connector.SwitchDatabase("blah");
+            using(var connector = new MySQLAdapter(Configuration))
+            {
+                connector.SwitchDatabase("blah");
+            }
 
             var adminUser = new SystemUser
-                                {
-                                    Username = "admin",
-                                    Passhash = "test",
-                                    IsDeleted = false,
-                                    CreatedAt = DateTime.Now,
-                                    ModifiedAt = DateTime.Now,
-                                };
+            {
+                Username = "admin",
+                Passhash = "test",
+                IsDeleted = false,
+                CreatedAt = DateTime.Now,
+                ModifiedAt = DateTime.Now,
+            };
 
-            var repository = new SystemUserRepository(Configuration);
+            var repository = new SystemUserRepository(new MySQLAdapter(Configuration));
 
             try
             {
@@ -46,7 +48,7 @@ namespace InfoHub.Deployer.Scripts
                 Console.WriteLine(e.Message);
                 return false;
             }
-
+            
             return true;
         }
 

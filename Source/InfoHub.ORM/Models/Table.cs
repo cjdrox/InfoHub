@@ -4,8 +4,10 @@ using InfoHub.ORM.Types;
 
 namespace InfoHub.ORM.Models
 {
-    public class Table : TransactedModel, ITable
+    public class Table : /*TransactedModel, */ITable
     {
+        public string TableName { get; set; }
+
         public IDictionary<string, ColumnData> ColumnTypes { get; set; }
 
         public Table(string name)
