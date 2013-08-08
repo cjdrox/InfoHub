@@ -51,17 +51,17 @@
       <Project>{9CB637EB-5F74-4DFE-A7BA-29A29F99F3F9}</Project>
       <Name>InfoHub.Entity</Name>
     </ProjectReference>
+    <ProjectReference Include="..\InfoHub.Infrastructure\InfoHub.Infrastructure.csproj">
+      <Project>{9bca8aa8-29bc-4969-a3b2-1777a43e21cd}</Project>
+      <Name>InfoHub.Infrastructure</Name>
+    </ProjectReference>
     <ProjectReference Include="..\InfoHub.ORM\InfoHub.ORM.csproj">
       <Project>{E9325E05-96A9-4C20-B25E-949504AC6F63}</Project>
       <Name>InfoHub.ORM</Name>
     </ProjectReference>
-    <ProjectReference Include="..\InfoHub.Security\InfoHub.Security.csproj">
-      <Project>{5A51F3AF-CFC5-4833-92AF-A81B70D3D7CB}</Project>
-      <Name>InfoHub.Security</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Helpers\" />
+    <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

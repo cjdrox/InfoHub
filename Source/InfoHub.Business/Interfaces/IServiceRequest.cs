@@ -1,5 +1,4 @@
 using System;
-using InfoHub.Entity.Entities;
 
 namespace InfoHub.Business.Interfaces
 {

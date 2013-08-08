@@ -9,6 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using InfoHub.ORM.Extensions;
 using InfoHub.ORM.Interfaces;
 
 namespace InfoHub.ORM.Models

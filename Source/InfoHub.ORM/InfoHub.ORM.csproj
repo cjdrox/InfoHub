@@ -31,7 +31,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="MySql.Data, Version=6.6.5.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL" />
+    <Reference Include="MySql.Data">
+      <HintPath>..\packages\MySql.Data.6.7.4\lib\net40\MySql.Data.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
@@ -42,14 +44,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Extensions\CommandExtensions.cs" />
+    <Compile Include="Extensions\ReaderExtensions.cs" />
     <Compile Include="Models\TransactedModel.cs" />
     <Compile Include="Models\Configuration.cs" />
     <Compile Include="Models\ConfigurationBase.cs" />
     <Compile Include="Models\DynamicModel.cs" />
     <Compile Include="Interfaces\IDynamicModel.cs" />
-    <Compile Include="Models\ObjectExtensions.cs" />
+    <Compile Include="Extensions\ObjectExtensions.cs" />
     <Compile Include="Models\Table.cs" />
-    <Compile Include="Services\ConnectionExtensions.cs" />
+    <Compile Include="Extensions\TransactionExtensions.cs" />
     <Compile Include="Types\ColumnData.cs" />
     <Compile Include="Types\ConnectionResult.cs" />
     <Compile Include="Helpers\Conversion.cs" />
@@ -59,6 +63,9 @@
     <Compile Include="Interfaces\ITable.cs" />
     <Compile Include="Services\MySQLAdapter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

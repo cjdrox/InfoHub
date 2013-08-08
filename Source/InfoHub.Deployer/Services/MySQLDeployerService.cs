@@ -4,6 +4,7 @@ using System.Reflection;
 using InfoHub.Business.Models;
 using InfoHub.Deployer.Helpers;
 using InfoHub.Deployer.Interfaces;
+using InfoHub.Entity.Attributes;
 using InfoHub.Entity.Models;
 using InfoHub.ORM.Interfaces;
 using InfoHub.ORM.Models;
@@ -110,7 +111,10 @@ namespace InfoHub.Deployer.Services
 
             ITable table = new Table(type.Name);
             var properties = type.GetProperties();
+            var primary = properties.Where(prop => Attribute.IsDefined(prop, typeof (PrimaryKeyAttribute))).ToList();
+            var primaryColumnName = primary.Any() ? primary.First().Name : String.Empty;
 
+            //TODO: Chameera
             table.ColumnTypes = properties
                 .Where(p => !p.Name.ToLower().Equals("name")
                             && !p.Name.ToLower().Equals("schema")
@@ -119,11 +123,11 @@ namespace InfoHub.Deployer.Services
                             && !p.Name.ToLower().Equals("primarykeyfield")
                             && !p.Name.ToLower().Equals("columntypes")
                             && !p.Name.ToLower().Equals("factory")
-                            && !p.Name.ToLower().Equals("connection")
-                )
+                            && !p.Name.ToLower().Equals("connection"))
                 .ToDictionary(r => r.Name, r => new ColumnData
                                                     {
-                                                        Type = r.PropertyType
+                                                        Type = r.PropertyType,
+                                                        IsPrimary = r.Name.Equals(primaryColumnName)
                                                     });
 
             _adapter.CreateTable(table);

@@ -1,4 +1,6 @@
-﻿using System.Text.RegularExpressions;
+﻿using System;
+using System.Linq;
+using InfoHub.Evaluator;
 
 namespace InfoHub.Console
 {
@@ -8,10 +10,11 @@ namespace InfoHub.Console
         {
             System.Console.Write("Infohub started\n\n>>");
             string command;
-
-            while ( !IsQuitCommand(command = System.Console.ReadLine()) )
+            
+            while (!IsQuitCommand(command = (args.Any() && !String.IsNullOrEmpty(args[0]) ? 
+                args[0] : System.Console.ReadLine())))
             {
-                System.Console.WriteLine(CommandResult(command));
+                System.Console.WriteLine("={0}", CommandResult(command));
                 System.Console.Write(">>");              
             }
 
@@ -29,63 +32,70 @@ namespace InfoHub.Console
                     result = "Generic Help method";
                     break;
                 default:
-                    result = EvaluateExpression( command );
+                    var parser = new CompiledExpression(command);
+                    parser.Parse();
+                    parser.Compile();
+                    result = parser.Eval().ToString();
                     break;
             }
 
             return result;
         }
 
-        private static string EvaluateExpression(string expression)
-        {
-            const string space = @"[\s]*?";
-            const string sign = @"[+-]{0,1}";
-            const string Operator = @"[+*/-]";
-            const string literal = @"\d+[%]{0,1}";
+        #region Old Codes
 
-            const string operand = space + sign + space + literal + space;
-            const string simpleExpression = @"^" + operand + "(" + Operator + operand + ")*$";
+        //private static string EvaluateExpression(string expression)
+        //{
+        //    const string space = @"[\s]*?";
+        //    const string sign = @"[+-]{0,1}";
+        //    const string Operator = @"[+*/-]";
+        //    const string literal = @"\d+[%]{0,1}";
 
-            if(Regex.IsMatch(expression, simpleExpression))
-            {
-                var op1 = Regex.Match(expression, @"^" + operand).ToString();
-                var rem = expression.Remove(expression.IndexOf(op1, System.StringComparison.Ordinal), op1.Length);
-                
-                //System.Console.Write("rem is: " + rem);
-                var op = Regex.Match(rem, Operator).ToString();
+        //    const string operand = space + sign + space + literal + space;
+        //    const string simpleExpression = @"^" + operand + "(" + Operator + operand + ")*$";
 
-                var rem2 = rem.Remove(rem.IndexOf(op, System.StringComparison.Ordinal), op.Length);
-                var op2 = Regex.Match(rem2, operand + "$").ToString();
+        //    if(Regex.IsMatch(expression, simpleExpression))
+        //    {
+        //        var op1 = Regex.Match(expression, @"^" + operand).ToString();
+        //        var rem = expression.Remove(expression.IndexOf(op1, StringComparison.Ordinal), op1.Length);
 
-                return Evaluate(op1, op2, op);
-            }
+        //        //System.Console.Write("rem is: " + rem);
+        //        var op = Regex.Match(rem, Operator).ToString();
 
-            return "invalid expression";
-        }
+        //        var rem2 = rem.Remove(rem.IndexOf(op, StringComparison.Ordinal), op.Length);
+        //        var op2 = Regex.Match(rem2, operand + "$").ToString();
 
-        private static string Evaluate(string op1, string op2, string op)
-        {
-            double operand1, operand2;
-            double.TryParse(op1, out operand1);
-            double.TryParse(op2, out operand2);
+        //        return Evaluate(op1, op2, op);
+        //    }
 
-            switch (op)
-            {
-                case "+":
-                    return (operand1 + operand2).ToString();
+        //    return "invalid expression";
+        //}
 
-                case "-":
-                    return (operand1 - operand2).ToString();
+        //private static string Evaluate(string op1, string op2, string op)
+        //{
+        //    double operand1, operand2;
+        //    double.TryParse(op1, out operand1);
+        //    double.TryParse(op2, out operand2);
 
-                case "/":
-                    return (operand1 / operand2).ToString();
+        //    switch (op)
+        //    {
+        //        case "+":
+        //            return (operand1 + operand2).ToString(CultureInfo.InvariantCulture);
 
-                case "*":
-                    return (operand1 * operand2).ToString();
-            }
+        //        case "-":
+        //            return (operand1 - operand2).ToString(CultureInfo.InvariantCulture);
 
-            return "Invalid expression";
-        }
+        //        case "/":
+        //            return (operand1 / operand2).ToString(CultureInfo.InvariantCulture);
+
+        //        case "*":
+        //            return (operand1 * operand2).ToString(CultureInfo.InvariantCulture);
+        //    }
+
+        //    return "Invalid expression";
+        //}
+
+        #endregion
 
         static bool IsQuitCommand(string command)
         {

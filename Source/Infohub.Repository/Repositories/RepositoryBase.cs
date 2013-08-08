@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using InfoHub.ORM.Services;
+using InfoHub.ORM.Extensions;
 using System.Linq;
 using InfoHub.ORM.Interfaces;
 using InfoHub.ORM.Models;
@@ -19,11 +19,11 @@ namespace Infohub.Repository.Repositories
 
         public T Add(T item)
         {
-            using (var session = _adapter.OpenConnection())
+            using (var connection = _adapter.OpenConnection())
             {
-                using (var transaction = session.BeginTransaction())
+                using (var transaction = connection.BeginTransaction())
                 {
-                    session.Insert(item);
+                    transaction.Insert(item);
                     transaction.Commit();
                 }
             }
@@ -38,13 +38,13 @@ namespace Infohub.Repository.Repositories
             var itemList = items as List<T> ?? items.ToList();
             if (items!=null && itemList.Any())
             {
-                using (var session = _adapter.OpenConnection())
+                using (var connection = _adapter.OpenConnection())
                 {
-                    using (var transaction = session.BeginTransaction())
+                    using (var transaction = connection.BeginTransaction())
                     {
                         foreach (var item in itemList)
                         {
-                            session.Insert(item);
+                            transaction.Insert(item);
                             list.Add(item);
                         }
                         transaction.Commit();
@@ -59,9 +59,9 @@ namespace Infohub.Repository.Repositories
 
         public T Update(T item)
         {
-            using (var session = _adapter.OpenConnection())
+            using (var connection = _adapter.OpenConnection())
             {
-                using (var transaction = session.BeginTransaction())
+                using (var transaction = connection.BeginTransaction())
                 {
                     //session.Update(item);
                     transaction.Commit();
@@ -88,11 +88,11 @@ namespace Infohub.Repository.Repositories
         public T Get(Guid id)
         {
             T item;
-            using (var session = _adapter.OpenConnection())
+            using (var connection = _adapter.OpenConnection())
             {
-                using (var transaction = session.BeginTransaction())
+                using (var transaction = connection.BeginTransaction())
                 {
-                    item = session.Query<T>(null).FirstOrDefault();
+                    item = transaction.Query<T>(null).FirstOrDefault();
                     transaction.Commit();
                 }
             }

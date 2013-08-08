@@ -286,7 +286,7 @@ namespace InfoHub.FaceBook.Targets.SlideShare
             var parameters = this.GetParameterBase();
             parameters.Add("username", username);
             parameters.Add("password", password);
-            parameters.Add("slideshow_id", slideshowId.ToString());
+            parameters.Add("slideshow_id", slideshowId.ToString(CultureInfo.InvariantCulture));
 
             return PostCommand.Execute("http://www.slideshare.net/api/2/delete_slideshow", parameters);
         }

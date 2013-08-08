@@ -1,7 +1,7 @@
 ﻿using System.Data.Common;
 using System.Data.SqlClient;
 using System.Linq;
-using InfoHub.ORM.Models;
+using InfoHub.ORM.Extensions;
 using NUnit.Framework;
 using System.Collections.Specialized;
 

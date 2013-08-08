@@ -31,7 +31,6 @@ namespace InfoHub.Deployer.Scripts
             {
                 Username = "admin",
                 Passhash = "test",
-                IsDeleted = false,
                 CreatedAt = DateTime.Now,
                 ModifiedAt = DateTime.Now,
             };
