@@ -1,8 +1,9 @@
 ﻿using InfoHub.Entity.Entities;
 using System.Linq;
+using InfoHub.Infrastructure.Security.Helpers;
 using InfoHub.ORM.Interfaces;
 using Infohub.Repository.Interfaces;
-using InfoHub.Infrastructure.Security.Models;
+
 namespace Infohub.Repository.Repositories
 {
     public class SystemUserRepository : RepositoryBase<SystemUser>, ISystemUserRepository

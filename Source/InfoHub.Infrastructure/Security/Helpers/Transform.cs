@@ -1,12 +1,28 @@
-﻿using System.Security.Cryptography;
+﻿using System;
+using System.Security.Cryptography;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using InfoHub.Infrastructure.Security.Interfaces;
+using InfoHub.Infrastructure.Security.Models;
 using HashAlgorithm = InfoHub.Infrastructure.Security.Types.HashAlgorithm;
 
-namespace InfoHub.Infrastructure.Security.Models
+namespace InfoHub.Infrastructure.Security.Helpers
 {
     public static class Transform
     {
+        private static readonly X509Store Store = Store ?? new X509Store();
+        private static X509Certificate2 _certificate = _certificate ?? GetCertificate();
+
+        private static X509Certificate2 GetCertificate()
+        {
+            Store.Open(OpenFlags.ReadOnly);
+            var certs = Store.Certificates.Find(X509FindType.FindBySubjectName, Properties.Settings.Default.CertificateSubject, false);
+
+            _certificate = certs[0];
+            Store.Close();
+            return _certificate;
+        }
+
         public static string ROT13(this string str)
         {
             var array = str.ToCharArray();
@@ -33,6 +49,16 @@ namespace InfoHub.Infrastructure.Security.Models
         public static string Encrypt(this string str, ICryptor cryptor)
         {
             return cryptor.Encrypt(str);
+        }
+
+        public static string Encrypt(this string plainText)
+        {
+            return RSAWrapper.Encrypt(plainText, _certificate);
+        }
+
+        public static string Decrypt(this string cipherText)
+        {
+            return RSAWrapper.Decrypt(cipherText, _certificate);
         }
 
         public static string Decrypt(this string str, ICryptor cryptor)

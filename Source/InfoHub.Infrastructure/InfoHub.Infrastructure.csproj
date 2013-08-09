@@ -48,13 +48,19 @@
     <Compile Include="Logging\LogEventType.cs" />
     <Compile Include="Logging\Logger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
     <Compile Include="SafeCall\Safely.cs" />
     <Compile Include="Security\Interfaces\ICryptor.cs" />
     <Compile Include="Security\Models\AES.cs" />
     <Compile Include="Security\Models\Cryptor.cs" />
     <Compile Include="Security\Models\RijnDael.cs" />
+    <Compile Include="Security\Models\RSAWrapper.cs" />
     <Compile Include="Security\Models\SymmetricCryptor.cs" />
-    <Compile Include="Security\Models\Transform.cs" />
+    <Compile Include="Security\Helpers\Transform.cs" />
     <Compile Include="Security\Types\AlgorithmType.cs" />
     <Compile Include="Security\Types\HashAlgorithm.cs" />
   </ItemGroup>
@@ -66,10 +72,19 @@
     <Content Include="NLog.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <None Include="app.config" />
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>
     <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="Security\Extra\createcert.bat" />
+    <None Include="Security\Extra\InfoHub.cer" />
+    <None Include="Security\Extra\InfoHub.pfx" />
+    <None Include="Security\Extra\InfoHub.pvk" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
