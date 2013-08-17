@@ -1,20 +1,15 @@
 ﻿using System;
 using System.Linq;
 using System.Reflection;
-using InfoHub.Business.Models;
-using InfoHub.Deployer.Helpers;
-using InfoHub.Deployer.Interfaces;
-using InfoHub.Entity.Attributes;
-using InfoHub.Entity.Models;
+using InfoHub.ORM.Attributes;
+using InfoHub.ORM.Helpers;
 using InfoHub.ORM.Interfaces;
 using InfoHub.ORM.Models;
-using InfoHub.ORM.Services;
 using InfoHub.ORM.Types;
-using IDatabaseDeployer = InfoHub.Deployer.Interfaces.IDatabaseDeployer;
 
-namespace InfoHub.Deployer.Services
+namespace InfoHub.ORM.Services
 {
-    public class MySQLDeployerService : ServiceBase<string>, IDatabaseDeployer
+    public class MySQLDeployerService : IDatabaseDeployer
     {
         private readonly Assembly _assembly;
         private readonly IConfiguration _configuration;
@@ -98,23 +93,11 @@ namespace InfoHub.Deployer.Services
 
         public void DeployClass(Type type)
         {
-            if (!typeof (BaseEntity).IsAssignableFrom(type))
-            {
-                throw new ArgumentException(String.Format("NOTE: {0} is not a {1} and will not be deployed",
-                                                          type.Name, typeof (BaseEntity).Name));
-            }
-
-            if (type.Name.Equals(typeof (BaseEntity).Name))
-            {
-                return;
-            }
-
             ITable table = new Table(type.Name);
-            var properties = type.GetProperties();
+            var properties = type.GetProperties().Where(prop=>!Attribute.IsDefined(prop, typeof(UnmappedAttribute))).ToList();
             var primary = properties.Where(prop => Attribute.IsDefined(prop, typeof (PrimaryKeyAttribute))).ToList();
             var primaryColumnName = primary.Any() ? primary.First().Name : String.Empty;
 
-            //TODO: Chameera
             table.ColumnTypes = properties
                 .Where(p => !p.Name.ToLower().Equals("name")
                             && !p.Name.ToLower().Equals("schema")
@@ -134,7 +117,7 @@ namespace InfoHub.Deployer.Services
             Console.WriteLine();
         }
 
-        public void DeployAllClasses(Assembly asm = null)
+        public void DeployAllClasses(Assembly asm = null, Type baseType = null)
         {
             asm = asm ?? _assembly;
 
@@ -148,6 +131,11 @@ namespace InfoHub.Deployer.Services
 
             var types = asm.GetTypes();
 
+            if (baseType!=null)
+            {
+                types = types.Where(t => baseType.IsAssignableFrom(t) && !t.Name.Equals(baseType.Name)).ToArray();
+            }
+            
             foreach (var type in types)
             {
                 try
@@ -169,7 +157,7 @@ namespace InfoHub.Deployer.Services
 
         #endregion
 
-        public override void Dispose()
+        public void Dispose()
         {
             _adapter.CloseConnection();
         }

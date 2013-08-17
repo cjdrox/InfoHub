@@ -1,6 +1,7 @@
 ﻿using System;
-using InfoHub.Entity.Attributes;
+using System.Runtime.Serialization;
 using InfoHub.Entity.Interfaces;
+using InfoHub.ORM.Attributes;
 using InfoHub.ORM.Models;
 
 namespace InfoHub.Entity.Models
@@ -30,6 +31,16 @@ namespace InfoHub.Entity.Models
         {
             Id = Guid.NewGuid();
             TableName = GetType().Name;
+        }
+
+        public virtual void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            throw new NotImplementedException();
+        }
+
+        public virtual object Clone()
+        {
+            throw new NotImplementedException();
         }
     }
 }

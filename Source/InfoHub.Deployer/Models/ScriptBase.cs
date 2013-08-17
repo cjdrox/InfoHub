@@ -1,5 +1,4 @@
 ﻿using System;
-using InfoHub.Deployer.Interfaces;
 using InfoHub.ORM.Interfaces;
 
 namespace InfoHub.Deployer.Models

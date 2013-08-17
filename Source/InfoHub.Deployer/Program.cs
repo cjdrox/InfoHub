@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Linq;
 using System.Reflection;
-using InfoHub.Deployer.Services;
+using InfoHub.Deployer.Helpers;
+using InfoHub.Entity.Models;
 using InfoHub.ORM.Interfaces;
 using InfoHub.ORM.Models;
 using InfoHub.ORM.Services;
-using IDatabaseDeployer = InfoHub.Deployer.Interfaces.IDatabaseDeployer;
 
 namespace InfoHub.Deployer
 {
@@ -13,7 +13,7 @@ namespace InfoHub.Deployer
     {
         static void Main(string[] args)
         {
-            var runAllScripts = args.Select(arg=>arg.ToLower()).Contains("/runscripts");
+            var runAllScripts = args.Select(arg=>arg.ToLower()).Contains(Flags.RunScriptsFlag);
 
             IConfiguration configuration = new Configuration("localhost", "", "3308", "root", "");
             
@@ -29,9 +29,9 @@ namespace InfoHub.Deployer
             
             Console.ForegroundColor = ConsoleColor.Yellow;
 
-            using(IDatabaseDeployer deployer = new MySQLDeployerService(Assembly.Load("InfoHub.Entity"), configuration))
+            using (var deployer = new MySQLDeployerService(Assembly.Load("InfoHub.Entity"), configuration))
             {
-                deployer.DeployAllClasses(null);
+                deployer.DeployAllClasses(null, typeof(BaseEntity));
                 deployer.RunAllScripts(Assembly.GetExecutingAssembly(), runAllScripts);
             }
             

@@ -1,13 +1,13 @@
 using System;
 
-namespace InfoHub.Entity.Attributes
+namespace InfoHub.ORM.Attributes
 {
     [AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
-    public sealed class UnmappedAttribute : Attribute
+    public sealed class FilterAttribute : Attribute
     {
         private readonly bool _sortable;
 
-        public UnmappedAttribute(bool sortable = true)
+        public FilterAttribute(bool sortable = true)
         {
             _sortable = sortable;
         }

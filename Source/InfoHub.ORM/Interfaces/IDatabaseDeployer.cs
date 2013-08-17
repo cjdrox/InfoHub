@@ -1,14 +1,13 @@
 using System;
 using System.Reflection;
-using InfoHub.ORM.Models;
 
 namespace InfoHub.ORM.Interfaces
 {
-    public interface IDatabaseDeployer
+    public interface IDatabaseDeployer : IDisposable
     {
-        void RunAllScripts(Assembly asm);
-        void DeployClass(Configuration cfg, Type type);
-        void DeployAllClasses(Assembly asm);
-        void RunScript(Assembly asm, Type type);
+        void RunAllScripts(Assembly asm, bool runSilently);
+        void DeployClass(Type type);
+        void DeployAllClasses(Assembly asm, Type baseType);
+        void RunScript(Assembly asm, Type type, bool runSilently);
     }
 }

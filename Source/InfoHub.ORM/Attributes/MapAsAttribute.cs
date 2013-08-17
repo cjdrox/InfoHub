@@ -1,6 +1,6 @@
 using System;
 
-namespace InfoHub.Entity.Attributes
+namespace InfoHub.ORM.Attributes
 {
     [AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
     public sealed class MapAsAttribute : Attribute

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using InfoHub.Infrastructure.Security.Interfaces;
@@ -56,25 +55,14 @@ namespace InfoHub.Infrastructure.Security.Helpers
             return RSAWrapper.Encrypt(plainText, _certificate);
         }
 
-        public static string Decrypt(this string cipherText)
-        {
-            return RSAWrapper.Decrypt(cipherText, _certificate);
-        }
-
         public static string Decrypt(this string str, ICryptor cryptor)
         {
             return cryptor.Decrypt(str);
         }
 
-        public static string MD5Hash(this string str)
+        public static string Decrypt(this string cipherText)
         {
-            var md5 = MD5.Create();
-            
-
-            var inputBytes = Encoding.ASCII.GetBytes(str);
-            var hash = md5.ComputeHash(inputBytes);
-
-            return hash.ToHexString();
+            return RSAWrapper.Decrypt(cipherText, _certificate);
         }
 
         public static string Hash(this string str, HashAlgorithm algorithm = HashAlgorithm.SHA512)

@@ -1,7 +1,6 @@
 using System;
-using InfoHub.ORM.Interfaces;
 
-namespace InfoHub.Deployer.Interfaces
+namespace InfoHub.ORM.Interfaces
 {
     public interface IScript : IDisposable
     {

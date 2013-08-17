@@ -8,8 +8,8 @@
     <ProjectGuid>{2A543400-14E1-43AA-8AB5-A54D97B33FC6}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>InfoHub.FaceBook</RootNamespace>
-    <AssemblyName>InfoHub.FaceBook</AssemblyName>
+    <RootNamespace>InfoHub.SocialMedia</RootNamespace>
+    <AssemblyName>InfoHub.SocialMedia</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -48,12 +48,18 @@
     <Compile Include="Targets\SlideShare\PostCommand.cs" />
     <Compile Include="Targets\SlideShare\SlideShare.cs" />
     <Compile Include="Targets\SlideShare\SortOrder.cs" />
+    <Compile Include="Targets\Vimeo\Methods.cs" />
+    <Compile Include="Targets\Vimeo\Objects\Authentication.cs" />
+    <Compile Include="Targets\Vimeo\Objects\Quota.cs" />
+    <Compile Include="Targets\Vimeo\Objects\UploadTicket.cs" />
+    <Compile Include="Targets\Vimeo\Objects\Video.cs" />
+    <Compile Include="Targets\Vimeo\URLUtils.cs" />
+    <Compile Include="Targets\Vimeo\Utilities.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Targets\Facebook\" />
     <Folder Include="Targets\LinkedIn\" />
     <Folder Include="Targets\Twitter\" />
-    <Folder Include="Targets\Vimeo\" />
     <Folder Include="Targets\Youtube\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -1,9 +1,10 @@
 using System;
-using InfoHub.Entity.Attributes;
+using System.Runtime.Serialization;
+using InfoHub.ORM.Attributes;
 
 namespace InfoHub.Entity.Interfaces
 {
-    public interface IEntity
+    public interface IEntity : ISerializable, ICloneable
     {
         [PrimaryKey]
         Guid Id { get; }

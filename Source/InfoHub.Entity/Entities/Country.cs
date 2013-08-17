@@ -1,5 +1,5 @@
-﻿using InfoHub.Entity.Attributes;
-using InfoHub.Entity.Models;
+﻿using InfoHub.Entity.Models;
+using InfoHub.ORM.Attributes;
 
 namespace InfoHub.Entity.Entities
 {

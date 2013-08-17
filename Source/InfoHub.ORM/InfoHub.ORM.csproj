@@ -44,8 +44,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Attributes\EncryptedAttribute.cs" />
+    <Compile Include="Attributes\FilterAttribute.cs" />
+    <Compile Include="Attributes\MapAsAttribute.cs" />
+    <Compile Include="Attributes\PrimaryKeyAttribute.cs" />
+    <Compile Include="Attributes\SortableAttribute.cs" />
+    <Compile Include="Attributes\TableAttribute.cs" />
+    <Compile Include="Attributes\UnmappedAttribute.cs" />
     <Compile Include="Extensions\CommandExtensions.cs" />
     <Compile Include="Extensions\ReaderExtensions.cs" />
+    <Compile Include="Extensions\TypeExtensions.cs" />
+    <Compile Include="Helpers\Names.cs" />
+    <Compile Include="Interfaces\IScript.cs" />
     <Compile Include="Models\TransactedModel.cs" />
     <Compile Include="Models\Configuration.cs" />
     <Compile Include="Models\ConfigurationBase.cs" />
@@ -54,6 +64,7 @@
     <Compile Include="Extensions\ObjectExtensions.cs" />
     <Compile Include="Models\Table.cs" />
     <Compile Include="Extensions\TransactionExtensions.cs" />
+    <Compile Include="Services\MySQLDeployerService.cs" />
     <Compile Include="Types\ColumnData.cs" />
     <Compile Include="Types\ConnectionResult.cs" />
     <Compile Include="Helpers\Conversion.cs" />

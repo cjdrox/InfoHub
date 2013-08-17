@@ -24,7 +24,7 @@ namespace InfoHub.Deployer.Scripts
             
             using(var connector = new MySQLAdapter(Configuration))
             {
-                connector.SwitchDatabase("blah");
+                connector.SwitchDatabase(configuration.Database);
             }
 
             var adminUser = new SystemUser

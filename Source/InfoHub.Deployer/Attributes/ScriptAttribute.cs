@@ -1,5 +1,5 @@
 ﻿using System;
-using InfoHub.Deployer.Helpers;
+using InfoHub.ORM.Helpers;
 
 namespace InfoHub.Deployer.Attributes
 {

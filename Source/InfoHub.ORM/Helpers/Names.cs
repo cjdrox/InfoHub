@@ -1,4 +1,4 @@
-namespace InfoHub.Deployer.Helpers
+namespace InfoHub.ORM.Helpers
 {
     public class Names
     {

@@ -43,9 +43,8 @@
   <ItemGroup>
     <Compile Include="Attributes\ExecuteAttribute.cs" />
     <Compile Include="Attributes\RollBackAttribute.cs" />
-    <Compile Include="Helpers\Names.cs" />
     <Compile Include="Attributes\ScriptAttribute.cs" />
-    <Compile Include="Interfaces\IScript.cs" />
+    <Compile Include="Helpers\Flags.cs" />
     <Compile Include="Models\ScriptBase.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -55,8 +54,6 @@
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
     <Compile Include="Scripts\Script001.cs" />
-    <Compile Include="Services\MySQLDeployerService.cs" />
-    <Compile Include="Interfaces\IDatabaseDeployer.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\InfoHub.Business\InfoHub.Business.csproj">

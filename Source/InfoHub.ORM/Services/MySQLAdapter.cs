@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using InfoHub.ORM.Extensions;
@@ -118,8 +116,8 @@ namespace InfoHub.ORM.Services
                 var name = columnType.Key;
                 var type = columnType.Value.Type;
 
-                var implicitlyNull = type.IsGenericType && type.GetGenericTypeDefinition() == typeof (Nullable<>);
-                var isEnumerable = typeof(IEnumerable<>).IsAssignableFrom(type) || typeof(IList).IsAssignableFrom(type);
+                var implicitlyNull = type.IsImplicitlyNullable();
+                var isEnumerable = type.IsEnumerable();
                 var primary = columnType.Value.IsPrimary;
 
                 var typeName = implicitlyNull ? Nullable.GetUnderlyingType(type).Name.ToMySQL() : type.Name.ToMySQL();

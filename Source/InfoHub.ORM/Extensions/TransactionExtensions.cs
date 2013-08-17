@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Reflection;
 using System.Text;
+using InfoHub.ORM.Attributes;
 using InfoHub.ORM.Helpers;
 using InfoHub.ORM.Interfaces;
 using MySql.Data.MySqlClient;
@@ -84,46 +86,25 @@ namespace InfoHub.ORM.Extensions
 
         public static ITable Insert(this IDbTransaction transaction, ITable table)
         {
-            var settings = (IDictionary<string, object>)table.ToExpando();
-            var sbKeys = new StringBuilder();
-            var sbVals = new StringBuilder();
-            var counter = 0;
+            var mappedProps = table.GetMappedProperties();
 
             var insertCommand = new MySqlCommand
                                     {
-                                        CommandText = table.CreateInsertCommand(),
+                                        CommandText = table.CreateInsertCommand(mappedProps),
                                         Connection = (MySqlConnection) transaction.Connection,
                                         Transaction = (MySqlTransaction) transaction
                                     };
 
-            
-
-            settings = settings
-                .Where(p => !p.Key.ToLower().Equals("name")
-                            && !p.Key.ToLower().Equals("schema")
-                            && !p.Key.ToLower().Equals("prototype")
-                            && !p.Key.ToLower().Equals("tablename")
-                            && !p.Key.ToLower().Equals("primarykeyfield")
-                            && !p.Key.ToLower().Equals("columntypes")
-                            && !p.Key.ToLower().Equals("factory")
-                            
-                ).ToDictionary(r => r.Key, r => r.Value);
-
-            foreach (var item in settings)
+            foreach (var item in mappedProps)
             {
-                sbKeys.AppendFormat("`{0}`,", item.Key);
-                sbVals.AppendFormat("@{0},", counter);
                 insertCommand.AddParam(item.Value);
-                counter++;
             }
 
             return transaction.Query(insertCommand, true) ? table : null;
         }
 
-        public static string CreateInsertCommand(this ITable table)
+        public static string CreateInsertCommand(this ITable table, Dictionary<string, object> mappedProps)
         {
-            var expando = table.ToExpando();
-            var properties = (IDictionary<string, object>)expando;
             var sbKeys = new StringBuilder();
             var sbVals = new StringBuilder();
             string result;
@@ -131,17 +112,7 @@ namespace InfoHub.ORM.Extensions
             const string stub = "INSERT INTO {0} ({1}) \r\n VALUES ({2})";
             var counter = 0;
 
-            properties = properties
-                .Where(p => !p.Key.ToLower().Equals("name")
-                            && !p.Key.ToLower().Equals("schema")
-                            && !p.Key.ToLower().Equals("prototype")
-                            && !p.Key.ToLower().Equals("tablename")
-                            && !p.Key.ToLower().Equals("primarykeyfield")
-                            && !p.Key.ToLower().Equals("columntypes")
-                            && !p.Key.ToLower().Equals("factory")
-                ).ToDictionary(r => r.Key, r => r.Value);
-
-            foreach (var property in properties)
+            foreach (var property in mappedProps)
             {
                 sbKeys.AppendFormat("`{0}`,", property.Key);
                 sbVals.AppendFormat("@{0},", counter);
@@ -162,6 +133,37 @@ namespace InfoHub.ORM.Extensions
             }
 
             return result;
+        }
+
+        private static Dictionary<string, object> GetMappedProperties(this ITable table)
+        {
+            var expando = table.ToExpando();
+            var properties = (IDictionary<string, object>)expando;
+
+            properties = properties
+                .Where(p => !p.Key.ToLower().Equals("name")
+                            && !p.Key.ToLower().Equals("schema")
+                            && !p.Key.ToLower().Equals("prototype")
+                            && !p.Key.ToLower().Equals("tablename")
+                            && !p.Key.ToLower().Equals("primarykeyfield")
+                            && !p.Key.ToLower().Equals("columntypes")
+                            && !p.Key.ToLower().Equals("factory")
+                ).ToDictionary(r => r.Key, r => r.Value);
+
+            // Exclude references
+            var simpleProps = properties.Where(prop => prop.Value != null && !(prop.Value.GetType().IsEnumerable()))
+                .ToDictionary(r => r.Key, r => r.Value);
+
+            // Get the list of Unmapped properties
+            var unMappedProps =
+                table.GetType().GetProperties(BindingFlags.FlattenHierarchy | BindingFlags.Public | BindingFlags.Instance).Where
+                    (prop => prop.GetCustomAttributes(typeof (UnmappedAttribute), true).Any());
+
+            // Now get a list of truly mapped props
+            var mappedProps =
+                simpleProps.Where(prop => !unMappedProps.Select(un => un.Name).Contains(prop.Key)).ToDictionary(r => r.Key,
+                                                                                                                r => r.Value);
+            return mappedProps;
         }
     }
 }
