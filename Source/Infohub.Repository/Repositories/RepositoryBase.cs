@@ -8,7 +8,7 @@ using Infohub.Repository.Interfaces;
 
 namespace Infohub.Repository.Repositories
 {
-    public class RepositoryBase<T> : IRepository<T> where T : Table, new()
+    public class RepositoryBase<T> : IRepository<T> where T : class, /*Table,*/ new()
     {
         private readonly IDatabaseAdapter _adapter;
 
@@ -23,7 +23,7 @@ namespace Infohub.Repository.Repositories
             {
                 using (var transaction = connection.BeginTransaction())
                 {
-                    transaction.Insert(item);
+                    //transaction.Insert(item);
                     transaction.Commit();
                 }
             }
@@ -44,7 +44,7 @@ namespace Infohub.Repository.Repositories
                     {
                         foreach (var item in itemList)
                         {
-                            transaction.Insert(item);
+                            //transaction.Insert(item);
                             list.Add(item);
                         }
                         transaction.Commit();

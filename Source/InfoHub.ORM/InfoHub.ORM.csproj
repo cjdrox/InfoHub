@@ -47,6 +47,7 @@
     <Compile Include="Attributes\EncryptedAttribute.cs" />
     <Compile Include="Attributes\FilterAttribute.cs" />
     <Compile Include="Attributes\MapAsAttribute.cs" />
+    <Compile Include="Attributes\OnActionAttributes.cs" />
     <Compile Include="Attributes\PrimaryKeyAttribute.cs" />
     <Compile Include="Attributes\SortableAttribute.cs" />
     <Compile Include="Attributes\TableAttribute.cs" />

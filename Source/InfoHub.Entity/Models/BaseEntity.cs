@@ -7,7 +7,7 @@ using InfoHub.ORM.Models;
 namespace InfoHub.Entity.Models
 {
     [Table]
-    public abstract class BaseEntity : Table, IEntity
+    public abstract class BaseEntity : /*Table,*/ IEntity
     {
         [PrimaryKey]
         public virtual Guid Id { get; private set; }
@@ -30,7 +30,7 @@ namespace InfoHub.Entity.Models
         protected BaseEntity()
         {
             Id = Guid.NewGuid();
-            TableName = GetType().Name;
+            //TableName = GetType().Name;
         }
 
         public virtual void GetObjectData(SerializationInfo info, StreamingContext context)

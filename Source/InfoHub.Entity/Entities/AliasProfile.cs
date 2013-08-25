@@ -1,13 +1,17 @@
-﻿using InfoHub.Entity.Models;
+﻿using System;
+using InfoHub.Entity.Models;
+using InfoHub.Infrastructure.Security.Helpers;
 using InfoHub.ORM.Attributes;
 
 namespace InfoHub.Entity.Entities
 {
-    public class AliasProfile : BaseEntity
+    public partial class AliasProfile : BaseEntity
     {
-        [Sortable, Filter, Encrypted]
-        public virtual string FullName { get; set; }
-        [Sortable, Filter, Encrypted]
-        public virtual string LastName{ get; set; }
+        [Sortable, Filter, Encrypted, Obsolete]
+        public virtual string FullNameEncrypted { get; set; }
+        [Sortable, Filter, Encrypted, Obsolete]
+        public virtual string LastNameEncrypted { get; set; }
+
+        
     }
 }

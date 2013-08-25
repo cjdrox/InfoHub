@@ -3,7 +3,7 @@ using InfoHub.ORM.Attributes;
 
 namespace InfoHub.Entity.Entities
 {
-    public class Country : BaseEntity
+    public partial class Country : BaseEntity
     {
         [Sortable, Filter]
         public string Name { get; set; }
