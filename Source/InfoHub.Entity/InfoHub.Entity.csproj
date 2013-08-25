@@ -85,18 +85,22 @@
     <EmbeddedResource Include="hibernate.cfg.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
-    <Content Include="Mapping\AliasProfile.hbm.xml">
+    <EmbeddedResource Include="Mapping\Country.hbm.xml">
       <DependentUpon>GenerateMappers.tt</DependentUpon>
-    </Content>
-    <Content Include="Mapping\Country.hbm.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Mapping\LoginAttempt.hbm.xml">
       <DependentUpon>GenerateMappers.tt</DependentUpon>
-    </Content>
-    <Content Include="Mapping\LoginAttempt.hbm.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Mapping\SystemUser.hbm.xml">
       <DependentUpon>GenerateMappers.tt</DependentUpon>
-    </Content>
-    <Content Include="Mapping\SystemUser.hbm.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Mapping\AliasProfile.hbm.xml">
       <DependentUpon>GenerateMappers.tt</DependentUpon>
-    </Content>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
     <Content Include="readme.txt" />
   </ItemGroup>
   <ItemGroup>

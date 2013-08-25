@@ -5,6 +5,7 @@ using InfoHub.ORM.Attributes;
 
 namespace InfoHub.Entity.Entities
 {
+    [Table("AccountProfile")]
     public partial class AliasProfile : BaseEntity
     {
         [Sortable, Filter, Encrypted, Obsolete]

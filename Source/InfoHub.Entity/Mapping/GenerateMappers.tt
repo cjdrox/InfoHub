@@ -1,30 +1,33 @@
-﻿<#@ template debug="false" hostspecific="true" language="C#" #>
+﻿<#@ template debug="true" hostspecific="true" language="C#" #>
 <#@ assembly name="System.Core" #>
+<#@ assembly name="EnvDTE" #>
+<#@ assembly name="Microsoft.VisualStudio.Shell.11.0" #>
+<#@ assembly name="Microsoft.VisualStudio.Shell.Interop" #>
 <#@ assembly name="$(ProjectDir)bin\Debug\InfoHub.Entity.dll" #>
 <#@ assembly name="$(ProjectDir)bin\Debug\InfoHub.ORM.dll" #>
+
 <#@ import namespace="System.Reflection" #>
 <#@ import namespace="System.Linq" #>
 <#@ import namespace="System.Text" #>
 <#@ import namespace="System.Collections.Generic" #>
-<#@ assembly name="EnvDTE" #>
-<#@ assembly name="Microsoft.VisualStudio.Shell.11.0" #>
-<#@ assembly name="Microsoft.VisualStudio.Shell.Interop" #>
-<#@ import namespace="EnvDTE" #>
-<#@ import namespace="Microsoft.VisualStudio.Shell" #>
-<#@ import namespace="Microsoft.VisualStudio.Shell.Interop" #>
+<#@ import namespace="InfoHub.Entity.Models" #>
+<#@ import namespace="InfoHub.Entity.Interfaces" #>
+<#@ import namespace="InfoHub.ORM.Attributes" #>
+
 <#@ include file="Manager.ttinclude"#>
 <# 
-	var manager = Manager.Create(Host, GenerationEnvironment); 
+	var manager = Manager.Create(Host, GenerationEnvironment);
 	GenerateFiles(manager);
+	EmbedHBMFiles("Mapping", "GenerateMappers.tt", ".hbm.xml");
 #>
 <#+
 	void GenerateFiles(Manager manager)
 	{
-		var asm = Assembly.GetAssembly(typeof(InfoHub.Entity.Models.BaseEntity));
-		var types = asm.GetTypes().Where(type=>!type.GetCustomAttributes(typeof(InfoHub.ORM.Attributes.UnmappedAttribute), true).Any());
+		var asm = Assembly.GetAssembly(typeof(BaseEntity));
+		var types = asm.GetTypes().Where(type=>!type.GetCustomAttributes(typeof(UnmappedAttribute), true).Any());
 
-		foreach (var type in types.Where(t=>t.IsClass && typeof(InfoHub.Entity.Interfaces.IEntity).IsAssignableFrom(t) 
-		&& t!=typeof(InfoHub.Entity.Models.BaseEntity)))
+		foreach (var type in types.Where(t=>t.IsClass && typeof(IEntity).IsAssignableFrom(t) 
+		&& t!=typeof(BaseEntity)))
 		{
 			GenerateFile(manager, type);
 		}
@@ -34,6 +37,10 @@
 	
 	void GenerateFile(Manager manager, Type type)
 	{
+		var isCustomName = type.GetCustomAttributes(typeof(InfoHub.ORM.Attributes.TableAttribute), true).Any();
+		var typeName = isCustomName 
+			? ((InfoHub.ORM.Attributes.TableAttribute)Attribute.GetCustomAttribute(type, typeof(InfoHub.ORM.Attributes.TableAttribute))).TableName 
+			: type.Name;
 		manager.StartNewFile(type.Name + ".generated.cs"); 
 #>
 using InfoHub.Infrastructure.Security.Helpers;
@@ -44,7 +51,7 @@ namespace InfoHub.Entity.Entities
 	public partial class <#= type.Name #> 
 	{
 <#+
-	var encryptedProps = type.GetProperties().Where(prop=>prop.GetCustomAttributes(typeof(InfoHub.ORM.Attributes.EncryptedAttribute), true).Any());
+	var encryptedProps = type.GetProperties().Where(prop=>prop.GetCustomAttributes(typeof(EncryptedAttribute), true).Any());
 	foreach(var prop in encryptedProps)
 	{
 		var propName = prop.Name.Replace("Encrypted", "");
@@ -68,9 +75,47 @@ namespace InfoHub.Entity.Entities
 #>
 <?xml version="1.0" encoding="utf-8" ?>
 <hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" namespace="InfoHub.Entity.Entities" assembly="InfoHub.Entity">
-	<class name="<#=type.Name#>" table="<#=type.Name#>">
+	<class name="<#=type.Name#>" table="<#=typeName#>">
 	</class>
 </hibernate-mapping>
 <#+		manager.EndBlock();
 	}	
+#>
+<#+
+	void EmbedHBMFiles(string section, string generator, string extension)
+	{
+		var hostServiceProvider = (IServiceProvider)Host;
+		var dte = (EnvDTE.DTE)hostServiceProvider.GetService(typeof(EnvDTE.DTE)); 
+		EnvDTE.ProjectItem containingProjectItem = dte.Solution.FindProjectItem(Host.TemplateFile);
+		EnvDTE.Project project = containingProjectItem.ContainingProject;
+		var projItems = project.ProjectItems;
+		EnvDTE.ProjectItems mappings = null;
+		List<EnvDTE.ProjectItem> maps = new List<EnvDTE.ProjectItem>();
+
+		foreach(EnvDTE.ProjectItem p in projItems)
+		{
+			if(p.Name==section) mappings = p.ProjectItems;
+		}
+
+		foreach(EnvDTE.ProjectItem p in mappings)
+		{
+			if(p.Name==generator) mappings = p.ProjectItems;
+		}
+
+		foreach(EnvDTE.ProjectItem entityItem in mappings)
+		{
+			if(entityItem.Name.EndsWith(extension)){ 
+				maps.Add(entityItem);
+			}
+		}
+
+		foreach(EnvDTE.ProjectItem mapfile in maps)
+		{
+			EnvDTE.Property buildAction = mapfile.Properties.Item("BuildAction");
+			EnvDTE.Property copy = mapfile.Properties.Item("CopyToOutputDirectory");
+
+			buildAction.Value = 3;
+			copy.Value = 1;
+		}
+	}
 #>

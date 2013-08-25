@@ -10,6 +10,8 @@ namespace InfoHub.Entity.Entities
     {
         [Sortable, Filter, Encrypted, Obsolete]
         public virtual string UsernameEncrypted { get; set; }
+
+        [MapAs("Password")]
         public virtual string Passhash{ get; set; }
 
         [OnDelete(Do.Restrict)]

@@ -5,16 +5,40 @@ namespace InfoHub.ORM.Attributes
     [AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
     public sealed class MapAsAttribute : Attribute
     {
-        private readonly Type _type;
+        private string Name { get; set; }
+        private Type Type { get; set; }
 
         public MapAsAttribute(Type type)
         {
-            _type = type;
+            Name = null;
+            Type = type;
+        }
+
+        public MapAsAttribute(string name)
+        {
+            Name = name;
+            Type = null;
+        }
+
+        public MapAsAttribute(string name, Type type)
+        {
+            Name = name;
+            Type = type;
         }
 
         public override string ToString()
         {
-            return _type.Name;
+            return Type.Name;
+        }
+
+        public bool IsCustomName
+        {
+            get { return String.IsNullOrEmpty(Name); }
+        }
+
+        public bool IsCustomType
+        {
+            get { return Type == null; }
         }
     }
 }
