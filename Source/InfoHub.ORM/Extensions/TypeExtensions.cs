@@ -15,5 +15,10 @@ namespace InfoHub.ORM.Extensions
         {
             return type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>);
         }
+
+        public static Type GetBaseType(this Type type)
+        {
+            return Nullable.GetUnderlyingType(type);
+        }
     }
 }

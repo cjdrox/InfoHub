@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" namespace="InfoHub.Entity.Entities" assembly="InfoHub.Entity">
 	<class name="SystemUser" table="SystemUser">
+	<meta>
+		<property name="UsernameEncrypted" type="VARCHAR(255)"></property>
+		<property name="Passhash" type="VARCHAR(255)"></property>
+		<property name="Id" type="VARCHAR(255)"></property>
+		<property name="CreatedAt" type="DATETIME"></property>
+		<property name="ModifiedAt" type="DATETIME"></property>
+		<property name="DeletedAt" type="DATETIME"></property>
+	</meta>
 	</class>
 </hibernate-mapping>

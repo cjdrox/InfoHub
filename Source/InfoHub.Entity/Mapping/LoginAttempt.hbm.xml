@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" namespace="InfoHub.Entity.Entities" assembly="InfoHub.Entity">
 	<class name="LoginAttempt" table="LoginAttempt">
+	<meta>
+		<property name="SystemUser" type="SystemUser"></property>
+		<property name="TimeStamp" type="DATETIME"></property>
+		<property name="IPAddress" type="IPAddress"></property>
+		<property name="Id" type="VARCHAR(255)"></property>
+		<property name="CreatedAt" type="DATETIME"></property>
+		<property name="ModifiedAt" type="DATETIME"></property>
+		<property name="DeletedAt" type="DATETIME"></property>
+	</meta>
 	</class>
 </hibernate-mapping>

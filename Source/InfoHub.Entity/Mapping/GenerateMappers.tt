@@ -7,12 +7,15 @@
 <#@ assembly name="$(ProjectDir)bin\Debug\InfoHub.ORM.dll" #>
 
 <#@ import namespace="System.Reflection" #>
+<#@ import namespace="System" #>
 <#@ import namespace="System.Linq" #>
 <#@ import namespace="System.Text" #>
 <#@ import namespace="System.Collections.Generic" #>
 <#@ import namespace="InfoHub.Entity.Models" #>
 <#@ import namespace="InfoHub.Entity.Interfaces" #>
 <#@ import namespace="InfoHub.ORM.Attributes" #>
+<#@ import namespace="InfoHub.ORM.Extensions" #>
+<#@ import namespace="InfoHub.ORM.Helpers" #>
 
 <#@ include file="Manager.ttinclude"#>
 <# 
@@ -76,9 +79,33 @@ namespace InfoHub.Entity.Entities
 <?xml version="1.0" encoding="utf-8" ?>
 <hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" namespace="InfoHub.Entity.Entities" assembly="InfoHub.Entity">
 	<class name="<#=type.Name#>" table="<#=typeName#>">
+	<meta>
+<#+
+var properties = type.GetProperties().ToDictionary(r=>r.Name, r=>r.PropertyType);
+var simpleProps = properties.Where(prop => prop.Value != null && !(prop.Value.IsEnumerable())).ToDictionary(r => r.Key, r => r.Value);
+
+// Get the list of Unmapped properties
+var unMappedProps = type.GetProperties(BindingFlags.FlattenHierarchy | BindingFlags.Public | BindingFlags.Instance).Where
+        (prop => prop.GetCustomAttributes(typeof (UnmappedAttribute), true).Any());
+
+// Now get a list of truly mapped props
+var mappedProps = simpleProps.Where(prop => !unMappedProps.Select(un => un.Name).Contains(prop.Key)).ToDictionary(r => r.Key, r => r.Value);
+foreach(var prop in mappedProps)
+{
+	var pname = prop.Key;
+	var ptype = prop.Value;
+	var isImplicitlyNullable = ptype.IsImplicitlyNullable();
+    var isEnumerable = ptype.IsEnumerable();
+	var typename = isImplicitlyNullable ? ptype.GetBaseType().Name.ToMySQL() : ptype.Name.ToMySQL();
+#>
+		<property name="<#=pname#>" type="<#=typename#>"></property>
+<#+
+}
+#>
+	</meta>
 	</class>
 </hibernate-mapping>
-<#+		manager.EndBlock();
+<#+		manager.EndBlock(); 
 	}	
 #>
 <#+
